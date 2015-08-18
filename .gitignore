@@ -4,6 +4,9 @@
 *.o
 *.obj
 
+# Compiled Dependencies files
+*.d
+
 # Precompiled Headers
 *.gch
 *.pch
