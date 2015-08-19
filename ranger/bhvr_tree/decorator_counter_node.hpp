@@ -26,71 +26,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RANGER_BHVR_TREE_AGENT_PROXY_HPP
-#define	RANGER_BHVR_TREE_AGENT_PROXY_HPP
+#ifndef RANGER_BHVR_TREE_DECORATOR_COUNTER_NODE_HPP
+#define RANGER_BHVR_TREE_DECORATOR_COUNTER_NODE_HPP
 
-#include <mutex>
-#include <map>
+#include "ranger/bhvr_tree/abstract_node.hpp"
 
 namespace ranger { namespace bhvr_tree {
 
 template <class AgentProxy>
-class decorator_counter_node;
-
-template <class Mutex, class AgentProxy>
-class agent_proxy_base {
+class decorator_counter_node : public abstract_node<AgentProxy> {
 public:
-	agent_proxy_base() = default;
-
-	agent_proxy_base(const agent_proxy_base<Mutex, AgentProxy>&) = delete;
-	agent_proxy_base<Mutex, AgentProxy>& operator = (const agent_proxy_base<Mutex, AgentProxy>&) = delete;
-
-	bool less_then_increase(decorator_counter_node<AgentProxy>* key, size_t value) {
-		std::lock_guard<Mutex> lock(m_counters_mtx);
-
-		auto it = m_counters.insert(std::make_pair(key, 0)).first;
-		if (it->second >= value) {
-			return false;
-		}
-
-		++it->second;
-		return true;
-	}
-
-private:
-	std::map<decorator_counter_node<AgentProxy>*, size_t> m_counters;
-	Mutex m_counters_mtx;
-};
-
-template <class Agent, class Mutex = std::mutex>
-class agent_proxy : public agent_proxy_base<Mutex, agent_proxy<Agent, Mutex>> {
-public:
-	using agent_type = Agent;
-	using mutex_type = Mutex;
-
-	agent_proxy(Agent& agent) : m_agent(agent) {
+	decorator_counter_node(size_t count) : m_count(count) {
 		// nop
 	}
 
-	Agent& get_agent() const {
-		return m_agent;
-	}
-
-	Agent* operator -> () const {
-		return &m_agent;
+	void exec(AgentProxy& ap, std::function<void(bool)> hdl) final {
+		auto node = this->get_first_child();
+		if (node && ap.less_then_increase(this, m_count)) {
+			node->exec(ap, [=, &ap] (bool result) {
+				hdl(result);
+			});
+		} else {
+			hdl(false);
+		}
 	}
 
 private:
-	Agent& m_agent;
-};
-
-template <class Mutex>
-class agent_proxy<void, Mutex> : public agent_proxy_base<Mutex, agent_proxy<void, Mutex>> {
-public:
-	using agent_type = void;
-	using mutex_type = Mutex;
+	size_t m_count;
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_AGENT_PROXY_HPP
+#endif	// RANGER_BHVR_TREE_DECORATOR_COUNTER_NODE_HPP
