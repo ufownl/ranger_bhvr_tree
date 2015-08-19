@@ -91,6 +91,21 @@ public:
 	using mutex_type = Mutex;
 };
 
+// An optional policy for agent_proxy.
+struct dummy_mutex {
+	void lock() {
+		// nop
+	}
+
+	bool try_lock() {
+		return true;
+	}
+
+	void unlock() {
+		// nop
+	}
+};
+
 } }
 
 #endif	// RANGER_BHVR_TREE_AGENT_PROXY_HPP
