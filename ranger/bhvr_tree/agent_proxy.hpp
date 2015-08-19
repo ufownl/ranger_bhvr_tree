@@ -50,7 +50,7 @@ public:
 	bool less_then_increase(decorator_counter_node<AgentProxy>* key, size_t value) {
 		std::lock_guard<Mutex> lock(m_counters_mtx);
 
-		auto it = m_counters.insert(std::make_pair(key, 0)).first;
+		auto it = m_counters.emplace(key, 0).first;
 		if (it->second >= value) {
 			return false;
 		}
