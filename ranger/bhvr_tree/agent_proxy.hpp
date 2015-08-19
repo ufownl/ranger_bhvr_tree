@@ -37,6 +37,8 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class decorator_counter_node;
 
+namespace detail {
+
 template <class Mutex, class AgentProxy>
 class agent_proxy_base {
 public:
@@ -62,8 +64,10 @@ private:
 	Mutex m_counters_mtx;
 };
 
+}
+
 template <class Agent, class Mutex = std::mutex>
-class agent_proxy : public agent_proxy_base<Mutex, agent_proxy<Agent, Mutex>> {
+class agent_proxy : public detail::agent_proxy_base<Mutex, agent_proxy<Agent, Mutex>> {
 public:
 	using agent_type = Agent;
 	using mutex_type = Mutex;
@@ -85,7 +89,7 @@ private:
 };
 
 template <class Mutex>
-class agent_proxy<void, Mutex> : public agent_proxy_base<Mutex, agent_proxy<void, Mutex>> {
+class agent_proxy<void, Mutex> : public detail::agent_proxy_base<Mutex, agent_proxy<void, Mutex>> {
 public:
 	using agent_type = void;
 	using mutex_type = Mutex;
