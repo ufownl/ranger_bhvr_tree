@@ -59,6 +59,11 @@ public:
 		return true;
 	}
 
+	void clear_all_state() {
+		std::lock_guard<Mutex> lock(m_counters_mtx);
+		m_counters.clear();
+	}
+
 private:
 	std::map<decorator_counter_node<AgentProxy>*, size_t> m_counters;
 	Mutex m_counters_mtx;
