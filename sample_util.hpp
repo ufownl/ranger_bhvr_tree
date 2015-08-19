@@ -1,5 +1,5 @@
-#ifndef BEHAVIOR_TREE_TEST_UTIL_HPP
-#define BEHAVIOR_TREE_TEST_UTIL_HPP
+#ifndef SAMPLE_UTIL_HPP
+#define SAMPLE_UTIL_HPP
 
 #include "ranger/bhvr_tree/agent_proxy.hpp"
 #include "ranger/bhvr_tree/abstract_node.hpp"
@@ -63,4 +63,4 @@ private:
 using true_node = behavior_node<true_atom>;
 using false_node = behavior_node<false_atom>;
 
-#endif	// BEHAVIOR_TREE_TEST_UTIL_HPP
+#endif	// SAMPLE_UTIL_HPP
