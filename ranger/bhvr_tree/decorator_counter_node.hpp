@@ -40,7 +40,7 @@ public:
 		// nop
 	}
 
-	void exec(AgentProxy& ap, std::function<void(bool)> hdl) final {
+	void exec(AgentProxy& ap, std::function<void(bool)> hdl) const final {
 		auto node = this->get_first_child();
 		if (node && ap.less_then_increase(this, m_count)) {
 			node->exec(ap, [=, &ap] (bool result) {

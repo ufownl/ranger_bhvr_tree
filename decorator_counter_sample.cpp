@@ -2,7 +2,7 @@
 #include "ranger/bhvr_tree/decorator_counter_node.hpp"
 
 void exec(	sample_agent_proxy& ap,
-			ranger::bhvr_tree::abstract_node<sample_agent_proxy>& root,
+			const ranger::bhvr_tree::abstract_node<sample_agent_proxy>& root,
 			size_t count) {
 	if (count > 0) {
 		root.exec(ap, [&ap, &root, count] (bool result) {

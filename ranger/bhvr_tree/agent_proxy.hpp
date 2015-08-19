@@ -47,7 +47,7 @@ public:
 	agent_proxy_base(const agent_proxy_base<Mutex, AgentProxy>&) = delete;
 	agent_proxy_base<Mutex, AgentProxy>& operator = (const agent_proxy_base<Mutex, AgentProxy>&) = delete;
 
-	bool less_then_increase(decorator_counter_node<AgentProxy>* key, size_t value) {
+	bool less_then_increase(const decorator_counter_node<AgentProxy>* key, size_t value) {
 		std::lock_guard<Mutex> lock(m_counters_mtx);
 
 		auto it = m_counters.emplace(key, 0).first;
@@ -65,7 +65,7 @@ public:
 	}
 
 private:
-	std::map<decorator_counter_node<AgentProxy>*, size_t> m_counters;
+	std::map<const decorator_counter_node<AgentProxy>*, size_t> m_counters;
 	Mutex m_counters_mtx;
 };
 

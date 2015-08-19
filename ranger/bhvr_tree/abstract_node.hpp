@@ -48,7 +48,7 @@ public:
 	abstract_node(const abstract_node<AgentProxy>&) = delete;
 	abstract_node<AgentProxy>& operator = (const abstract_node<AgentProxy>&) = delete;
 
-	virtual void exec(AgentProxy&, std::function<void(bool)>) = 0;
+	virtual void exec(AgentProxy&, std::function<void(bool)>) const = 0;
 
 	void attach_child(std::unique_ptr<abstract_node<AgentProxy>> node) {
 		if (!node) {
