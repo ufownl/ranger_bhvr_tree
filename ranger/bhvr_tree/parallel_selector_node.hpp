@@ -42,15 +42,19 @@ public:
 		for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
 			++data->count;
 		}
-		
-		for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
-			node->exec(ap, [=, &ap] (bool result) {
-				std::lock_guard<Mutex> lock(data->mtx);
-				data->result = data->result || result;
-				if (--data->count == 0) {
-					hdl(data->result);
-				}
-			});
+
+		if (data->count > 0) {
+			for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
+				node->exec(ap, [=, &ap] (bool result) {
+					std::lock_guard<Mutex> lock(data->mtx);
+					data->result = data->result || result;
+					if (--data->count == 0) {
+						hdl(data->result);
+					}
+				});
+			}
+		} else {
+			hdl(data->result);
 		}
 	}
 
