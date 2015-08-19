@@ -34,8 +34,7 @@ public:
 		// nop
 	}
 
-	void exec(sample_agent_proxy& ap, std::function<void(bool)> hdl) final {
-		std::cout << "behavior_node::exec" << std::endl;
+	void exec(sample_agent_proxy& ap, std::function<void(bool)> hdl) override {
 		caf::spawn([this, hdl] (caf::event_based_actor* self) {
 			self->sync_send(m_target, Atom::value).then(
 				[=] (bool result) {
@@ -49,7 +48,22 @@ private:
 	result_actor m_target;
 };
 
-using true_node = behavior_node<true_atom>;
-using false_node = behavior_node<false_atom>;
+struct true_node : public behavior_node<true_atom> {
+	using super = behavior_node<true_atom>;
+
+	void exec(sample_agent_proxy& ap, std::function<void(bool)> hdl) final {
+		std::cout << "true_node::exec" << std::endl;
+		super::exec(ap, std::move(hdl));
+	}
+};
+
+struct false_node : public behavior_node<false_atom> {
+	using super = behavior_node<false_atom>;
+
+	void exec(sample_agent_proxy& ap, std::function<void(bool)> hdl) final {
+		std::cout << "false_node::exec" << std::endl;
+		super::exec(ap, std::move(hdl));
+	}
+};
 
 #endif	// SAMPLE_UTIL_HPP
