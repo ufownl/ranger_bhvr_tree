@@ -34,10 +34,7 @@
 
 namespace ranger { namespace bhvr_tree {
 
-template <class Agent>
-class agent_proxy;
-
-template <class Agent>
+template <class AgentProxy>
 class abstract_node {
 public:
 	abstract_node() : m_last_child(nullptr) {
@@ -48,12 +45,12 @@ public:
 		// nop
 	}
 
-	abstract_node(const abstract_node<Agent>&) = delete;
-	abstract_node<Agent>& operator = (const abstract_node<Agent>&) = delete;
+	abstract_node(const abstract_node<AgentProxy>&) = delete;
+	abstract_node<AgentProxy>& operator = (const abstract_node<AgentProxy>&) = delete;
 
-	virtual void exec(agent_proxy<Agent>&, std::function<void(bool)>) = 0;
+	virtual void exec(AgentProxy&, std::function<void(bool)>) = 0;
 
-	void attach_child(std::unique_ptr<abstract_node<Agent>> node) {
+	void attach_child(std::unique_ptr<abstract_node<AgentProxy>> node) {
 		if (!node) {
 			return;
 		}
@@ -67,18 +64,18 @@ public:
 		}
 	}
 
-	abstract_node<Agent>* get_next_sibling() const {
+	abstract_node<AgentProxy>* get_next_sibling() const {
 		return m_next_sibling.get();
 	}
 
-	abstract_node<Agent>* get_first_child() const {
+	abstract_node<AgentProxy>* get_first_child() const {
 		return m_first_child.get();
 	}
 
 private:
-	std::unique_ptr<abstract_node<Agent>> m_next_sibling;
-	std::unique_ptr<abstract_node<Agent>> m_first_child;
-	abstract_node<Agent>* m_last_child;
+	std::unique_ptr<abstract_node<AgentProxy>> m_next_sibling;
+	std::unique_ptr<abstract_node<AgentProxy>> m_first_child;
+	abstract_node<AgentProxy>* m_last_child;
 };
 
 } }

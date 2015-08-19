@@ -29,13 +29,31 @@
 #ifndef RANGER_BHVR_TREE_AGENT_PROXY_HPP
 #define	RANGER_BHVR_TREE_AGENT_PROXY_HPP
 
+#include <mutex>
+
 namespace ranger { namespace bhvr_tree {
 
-template <class Agent>
-class agent_proxy {
+template <class Mutex, class AgentProxy>
+class agent_proxy_base {
 public:
+	agent_proxy_base() = default;
+
+	agent_proxy_base(const agent_proxy_base<Mutex, AgentProxy>&) = delete;
+	agent_proxy_base<Mutex, AgentProxy>& operator = (const agent_proxy_base<Mutex, AgentProxy>&) = delete;
+};
+
+template <class Agent, class Mutex = std::mutex>
+class agent_proxy : public agent_proxy_base<Mutex, agent_proxy<Agent, Mutex>> {
+public:
+	using agent_type = Agent;
+	using mutex_type = Mutex;
+
 	agent_proxy(Agent& agent) : m_agent(agent) {
 		// nop
+	}
+
+	Agent& get_agent() const {
+		return m_agent;
 	}
 
 	Agent* operator -> () const {
@@ -46,9 +64,11 @@ private:
 	Agent& m_agent;
 };
 
-template <>
-class agent_proxy<void> {
-	// nop
+template <class Mutex>
+class agent_proxy<void, Mutex> : public agent_proxy_base<Mutex, agent_proxy<void, Mutex>> {
+public:
+	using agent_type = void;
+	using mutex_type = Mutex;
 };
 
 } }

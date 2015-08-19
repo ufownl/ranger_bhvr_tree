@@ -34,10 +34,12 @@
 
 namespace ranger { namespace bhvr_tree {
 
-template <class Agent, class Mutex = std::mutex>
-class parallel_sequence_node : public abstract_node<Agent> {
+template <class AgentProxy>
+class parallel_sequence_node : public abstract_node<AgentProxy> {
 public:
-	void exec(agent_proxy<Agent>& ap, std::function<void(bool)> hdl) final {
+	using mutex_type = typename AgentProxy::mutex_type;
+
+	void exec(AgentProxy& ap, std::function<void(bool)> hdl) final {
 		auto data = std::make_shared<internal_data>();
 		for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
 			++data->count;
@@ -46,7 +48,7 @@ public:
 		if (data->count > 0) {
 			for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
 				node->exec(ap, [=, &ap] (bool result) {
-					std::lock_guard<Mutex> lock(data->mtx);
+					std::lock_guard<mutex_type> lock(data->mtx);
 					data->result = data->result && result;
 					if (--data->count == 0) {
 						hdl(data->result);
@@ -62,7 +64,7 @@ private:
 	struct internal_data {
 		size_t count {0};
 		bool result {true};
-		Mutex mtx;
+		mutex_type mtx;
 	};
 };
 

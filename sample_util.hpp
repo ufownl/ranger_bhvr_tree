@@ -25,14 +25,16 @@ result_actor::behavior_type result_actor_impl(result_actor::pointer self) {
 	};
 }
 
+using sample_agent_proxy = ranger::bhvr_tree::agent_proxy<void>;
+
 template <class Atom>
-class behavior_node : public ranger::bhvr_tree::abstract_node<void> {
+class behavior_node : public ranger::bhvr_tree::abstract_node<sample_agent_proxy> {
 public:
 	behavior_node() : m_target(caf::spawn(result_actor_impl)) {
 		// nop
 	}
 
-	void exec(ranger::bhvr_tree::agent_proxy<void>& ap, std::function<void(bool)> hdl) final {
+	void exec(sample_agent_proxy& ap, std::function<void(bool)> hdl) final {
 		std::cout << "behavior_node::exec" << std::endl;
 		caf::spawn([this, hdl] (caf::event_based_actor* self) {
 			self->sync_send(m_target, Atom::value).then(

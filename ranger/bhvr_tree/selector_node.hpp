@@ -33,15 +33,15 @@
 
 namespace ranger { namespace bhvr_tree {
 
-template <class Agent>
-class selector_node : public abstract_node<Agent> {
+template <class AgentProxy>
+class selector_node : public abstract_node<AgentProxy> {
 public:
-	void exec(agent_proxy<Agent>& ap, std::function<void(bool)> hdl) final {
+	void exec(AgentProxy& ap, std::function<void(bool)> hdl) final {
 		exec_impl(ap, this->get_first_child(), std::move(hdl));
 	}
 
 private:
-	void exec_impl(agent_proxy<Agent>& ap, abstract_node<Agent>* node, std::function<void(bool)> hdl) {
+	void exec_impl(AgentProxy& ap, abstract_node<AgentProxy>* node, std::function<void(bool)> hdl) {
 		if (node) {
 			node->exec(ap, [=, &ap] (bool result) {
 				if (result) {

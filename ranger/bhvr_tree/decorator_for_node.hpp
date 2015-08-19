@@ -33,14 +33,14 @@
 
 namespace ranger { namespace bhvr_tree {
 
-template <class Agent>
-class decorator_for_node : public abstract_node<Agent> {
+template <class AgentProxy>
+class decorator_for_node : public abstract_node<AgentProxy> {
 public:
 	decorator_for_node(size_t count) : m_count(count) {
 		// nop
 	}
 
-	void exec(agent_proxy<Agent>& ap, std::function<void(bool)> hdl) final {
+	void exec(AgentProxy& ap, std::function<void(bool)> hdl) final {
 		auto node = this->get_first_child();
 		if (node && m_count > 0) {
 			exec_impl(ap, node, m_count, false, std::move(hdl));
@@ -50,8 +50,8 @@ public:
 	}
 
 private:
-	void exec_impl(	agent_proxy<Agent>& ap,
-					abstract_node<Agent>* node,
+	void exec_impl(	AgentProxy& ap,
+					abstract_node<AgentProxy>* node,
 					size_t count,
 					bool current,
 					std::function<void(bool)> hdl) {

@@ -33,10 +33,10 @@
 
 namespace ranger { namespace bhvr_tree {
 
-template <class Agent>
-class decorator_not_node : public abstract_node<Agent> {
+template <class AgentProxy>
+class decorator_not_node : public abstract_node<AgentProxy> {
 public:
-	void exec(agent_proxy<Agent>& ap, std::function<void(bool)> hdl) final {
+	void exec(AgentProxy& ap, std::function<void(bool)> hdl) final {
 		auto node = this->get_first_child();
 		if (node) {
 			node->exec(ap, [=, &ap] (bool result) {
