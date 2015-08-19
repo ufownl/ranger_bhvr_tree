@@ -4,19 +4,7 @@
 #include "ranger/bhvr_tree/agent_proxy.hpp"
 #include "ranger/bhvr_tree/abstract_node.hpp"
 #include <caf/all.hpp>
-#include <sstream>
-#include <thread>
 #include <chrono>
-
-namespace std {
-
-inline std::string to_string(const std::thread::id& tid) {
-	std::stringstream ss;
-	ss << tid;
-	return ss.str();
-}
-
-}
 
 using true_atom = caf::atom_constant<caf::atom("true")>;
 using false_atom = caf::atom_constant<caf::atom("false")>;
@@ -49,7 +37,6 @@ public:
 		caf::spawn([this, hdl] (caf::event_based_actor* self) {
 			self->sync_send(m_target, Atom::value).then(
 				[=] (bool result) {
-					caf::aout(self) << std::this_thread::get_id() << std::endl;
 					hdl(result);
 				}
 			);
