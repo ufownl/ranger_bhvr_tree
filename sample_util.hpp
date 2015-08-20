@@ -5,6 +5,7 @@
 #include "ranger/bhvr_tree/abstract_node.hpp"
 #include <caf/all.hpp>
 #include <chrono>
+#include <stdio.h>
 
 using true_atom = caf::atom_constant<caf::atom("true")>;
 using false_atom = caf::atom_constant<caf::atom("false")>;
@@ -52,7 +53,7 @@ struct true_node : public behavior_node<true_atom> {
 	using super = behavior_node<true_atom>;
 
 	void exec(sample_agent_proxy& ap, std::function<void(bool)> hdl) const final {
-		std::cout << "true_node::exec" << std::endl;
+		puts("true_node::exec");
 		super::exec(ap, std::move(hdl));
 	}
 };
@@ -61,7 +62,7 @@ struct false_node : public behavior_node<false_atom> {
 	using super = behavior_node<false_atom>;
 
 	void exec(sample_agent_proxy& ap, std::function<void(bool)> hdl) const final {
-		std::cout << "false_node::exec" << std::endl;
+		puts("false_node::exec");
 		super::exec(ap, std::move(hdl));
 	}
 };
