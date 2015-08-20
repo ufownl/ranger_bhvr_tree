@@ -38,6 +38,9 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class decorator_counter_node;
 
+template <class AgentProxy>
+class decorator_timer_node;
+
 namespace detail {
 
 template <class Mutex, class Clock, class AgentProxy>
@@ -60,14 +63,43 @@ public:
 		return true;
 	}
 
+	bool expired_then_update(	const decorator_timer_node<AgentProxy>* key,
+								const typename Clock::duration& dur) {
+		auto now = Clock::now();
+		{
+			std::lock_guard<Mutex> lock(m_time_points_mtx);
+
+			auto it = m_time_points.emplace(key, now).first;
+			if (now - it->second < dur) {
+				return false;
+			}
+
+			it->second = now;
+			return true;
+		}
+	}
+
 	void clear_all_state() {
-		std::lock_guard<Mutex> lock(m_counters_mtx);
-		m_counters.clear();
+		{
+			std::lock_guard<Mutex> lock(m_counters_mtx);
+			m_counters.clear();
+		}
+
+		{
+			std::lock_guard<Mutex> lock(m_time_points_mtx);
+			m_time_points.clear();
+		}
 	}
 
 private:
 	std::map<const decorator_counter_node<AgentProxy>*, size_t> m_counters;
 	Mutex m_counters_mtx;
+
+	std::map<
+		const decorator_timer_node<AgentProxy>*,
+		std::chrono::time_point<Clock>
+	> m_time_points;
+	Mutex m_time_points_mtx;
 };
 
 }
