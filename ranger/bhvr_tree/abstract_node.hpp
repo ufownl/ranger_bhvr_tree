@@ -50,9 +50,9 @@ public:
 
 	virtual void exec(AgentProxy&, std::function<void(bool)>) const = 0;
 
-	void attach_child(std::unique_ptr<abstract_node<AgentProxy>> node) {
+	abstract_node<AgentProxy>* attach_child(std::unique_ptr<abstract_node<AgentProxy>> node) {
 		if (!node) {
-			return;
+			return nullptr;
 		}
 
 		if (m_last_child) {
@@ -62,6 +62,8 @@ public:
 			m_first_child = std::move(node);
 			m_last_child = m_first_child.get();
 		}
+
+		return m_last_child;
 	}
 
 	abstract_node<AgentProxy>* get_next_sibling() const {
