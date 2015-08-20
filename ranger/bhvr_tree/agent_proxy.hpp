@@ -30,6 +30,7 @@
 #define	RANGER_BHVR_TREE_AGENT_PROXY_HPP
 
 #include <mutex>
+#include <chrono>
 #include <map>
 
 namespace ranger { namespace bhvr_tree {
@@ -39,13 +40,13 @@ class decorator_counter_node;
 
 namespace detail {
 
-template <class Mutex, class AgentProxy>
+template <class Mutex, class Clock, class AgentProxy>
 class agent_proxy_base {
 public:
 	agent_proxy_base() = default;
 
-	agent_proxy_base(const agent_proxy_base<Mutex, AgentProxy>&) = delete;
-	agent_proxy_base<Mutex, AgentProxy>& operator = (const agent_proxy_base<Mutex, AgentProxy>&) = delete;
+	agent_proxy_base(const agent_proxy_base<Mutex, Clock, AgentProxy>&) = delete;
+	agent_proxy_base<Mutex, Clock, AgentProxy>& operator = (const agent_proxy_base<Mutex, Clock, AgentProxy>&) = delete;
 
 	bool less_then_increase(const decorator_counter_node<AgentProxy>* key, size_t value) {
 		std::lock_guard<Mutex> lock(m_counters_mtx);
@@ -71,11 +72,12 @@ private:
 
 }
 
-template <class Agent, class Mutex = std::mutex>
-class agent_proxy : public detail::agent_proxy_base<Mutex, agent_proxy<Agent, Mutex>> {
+template <class Agent, class Mutex = std::mutex, class Clock = std::chrono::high_resolution_clock>
+class agent_proxy : public detail::agent_proxy_base<Mutex, Clock, agent_proxy<Agent, Mutex, Clock>> {
 public:
 	using agent_type = Agent;
 	using mutex_type = Mutex;
+	using clock_type = Clock;
 
 	agent_proxy(Agent& agent) : m_agent(agent) {
 		// nop
@@ -93,11 +95,12 @@ private:
 	Agent& m_agent;
 };
 
-template <class Mutex>
-class agent_proxy<void, Mutex> : public detail::agent_proxy_base<Mutex, agent_proxy<void, Mutex>> {
+template <class Mutex, class Clock>
+class agent_proxy<void, Mutex, Clock> : public detail::agent_proxy_base<Mutex, Clock, agent_proxy<void, Mutex, Clock>> {
 public:
 	using agent_type = void;
 	using mutex_type = Mutex;
+	using clock_type = Clock;
 };
 
 // An optional policy for agent_proxy.
