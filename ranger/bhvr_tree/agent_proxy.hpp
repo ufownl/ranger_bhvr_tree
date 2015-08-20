@@ -29,80 +29,9 @@
 #ifndef RANGER_BHVR_TREE_AGENT_PROXY_HPP
 #define	RANGER_BHVR_TREE_AGENT_PROXY_HPP
 
-#include <mutex>
-#include <chrono>
-#include <map>
+#include "ranger/bhvr_tree/detail/agent_proxy_base.hpp"
 
 namespace ranger { namespace bhvr_tree {
-
-template <class AgentProxy>
-class decorator_counter_node;
-
-template <class AgentProxy>
-class decorator_timer_node;
-
-namespace detail {
-
-template <class Mutex, class Clock, class AgentProxy>
-class agent_proxy_base {
-public:
-	agent_proxy_base() = default;
-
-	agent_proxy_base(const agent_proxy_base<Mutex, Clock, AgentProxy>&) = delete;
-	agent_proxy_base<Mutex, Clock, AgentProxy>& operator = (const agent_proxy_base<Mutex, Clock, AgentProxy>&) = delete;
-
-	bool less_then_increase(const decorator_counter_node<AgentProxy>* key, size_t value) {
-		std::lock_guard<Mutex> lock(m_counters_mtx);
-
-		auto it = m_counters.emplace(key, 0).first;
-		if (it->second >= value) {
-			return false;
-		}
-
-		++it->second;
-		return true;
-	}
-
-	bool expired_then_update(	const decorator_timer_node<AgentProxy>* key,
-								const typename Clock::duration& dur) {
-		auto now = Clock::now();
-		{
-			std::lock_guard<Mutex> lock(m_time_points_mtx);
-
-			auto it = m_time_points.emplace(key, now).first;
-			if (now - it->second < dur) {
-				return false;
-			}
-
-			it->second = now;
-			return true;
-		}
-	}
-
-	void clear_all_state() {
-		{
-			std::lock_guard<Mutex> lock(m_counters_mtx);
-			m_counters.clear();
-		}
-
-		{
-			std::lock_guard<Mutex> lock(m_time_points_mtx);
-			m_time_points.clear();
-		}
-	}
-
-private:
-	std::map<const decorator_counter_node<AgentProxy>*, size_t> m_counters;
-	Mutex m_counters_mtx;
-
-	std::map<
-		const decorator_timer_node<AgentProxy>*,
-		std::chrono::time_point<Clock>
-	> m_time_points;
-	Mutex m_time_points_mtx;
-};
-
-}
 
 template <class Agent, class Mutex = std::mutex, class Clock = std::chrono::high_resolution_clock>
 class agent_proxy : public detail::agent_proxy_base<Mutex, Clock, agent_proxy<Agent, Mutex, Clock>> {
