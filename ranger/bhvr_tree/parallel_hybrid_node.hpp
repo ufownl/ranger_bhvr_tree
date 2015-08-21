@@ -45,7 +45,7 @@ public:
 		// nop
 	}
 
-	void exec(AgentProxy& ap, std::function<void(bool)> hdl) const final {
+	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
 		auto data = std::make_shared<internal_data>();
 		for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
 			++data->count;

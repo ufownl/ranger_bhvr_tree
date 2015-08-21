@@ -30,36 +30,44 @@
 #define	RANGER_BHVR_TREE_AGENT_PROXY_HPP
 
 #include "ranger/bhvr_tree/detail/agent_proxy_base.hpp"
+#include <functional>
 
 namespace ranger { namespace bhvr_tree {
 
-template <class Agent, class Mutex = std::mutex, class Clock = std::chrono::high_resolution_clock>
-class agent_proxy : public detail::agent_proxy_base<Mutex, Clock, agent_proxy<Agent, Mutex, Clock>> {
+template <	class Agent,
+			class Handler = std::function<void(bool)>,
+			class Mutex = std::mutex,
+			class Clock = std::chrono::high_resolution_clock>
+class agent_proxy
+	: public detail::agent_proxy_base<Mutex, Clock, agent_proxy<Agent, Handler, Mutex, Clock>> {
 public:
 	using agent_type = Agent;
+	using handler_type = Handler;
 	using mutex_type = Mutex;
 	using clock_type = Clock;
 
-	agent_proxy(Agent& agent) : m_agent(agent) {
+	agent_proxy(agent_type& agent) : m_agent(agent) {
 		// nop
 	}
 
-	Agent& get_agent() const {
+	agent_type& get_agent() const {
 		return m_agent;
 	}
 
-	Agent* operator -> () const {
+	agent_type* operator -> () const {
 		return &m_agent;
 	}
 
 private:
-	Agent& m_agent;
+	agent_type& m_agent;
 };
 
-template <class Mutex, class Clock>
-class agent_proxy<void, Mutex, Clock> : public detail::agent_proxy_base<Mutex, Clock, agent_proxy<void, Mutex, Clock>> {
+template <class Handler, class Mutex, class Clock>
+class agent_proxy<void, Handler, Mutex, Clock>
+	: public detail::agent_proxy_base<Mutex, Clock, agent_proxy<void, Handler, Mutex, Clock>> {
 public:
 	using agent_type = void;
+	using handler_type = Handler;
 	using mutex_type = Mutex;
 	using clock_type = Clock;
 };

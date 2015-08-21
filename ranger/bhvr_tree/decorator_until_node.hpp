@@ -40,7 +40,7 @@ public:
 		// nop
 	}
 
-	void exec(AgentProxy& ap, std::function<void(bool)> hdl) const final {
+	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
 		auto node = this->get_first_child();
 		if (node) {
 			exec_impl(ap, node, std::move(hdl));
@@ -52,7 +52,7 @@ public:
 private:
 	void exec_impl(	AgentProxy& ap,
 					abstract_node<AgentProxy>* node,
-					std::function<void(bool)> hdl) const {
+					typename AgentProxy::handler_type hdl) const {
 		node->exec(ap, [=, &ap] (bool result) {
 			if (result == m_result) {
 				hdl(result);

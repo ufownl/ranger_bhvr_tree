@@ -29,7 +29,6 @@
 #ifndef RANGER_BHVR_TREE_ABSTRACT_NODE_HPP
 #define	RANGER_BHVR_TREE_ABSTRACT_NODE_HPP
 
-#include <functional>
 #include <memory>
 
 namespace ranger { namespace bhvr_tree {
@@ -48,7 +47,7 @@ public:
 	abstract_node(const abstract_node<AgentProxy>&) = delete;
 	abstract_node<AgentProxy>& operator = (const abstract_node<AgentProxy>&) = delete;
 
-	virtual void exec(AgentProxy&, std::function<void(bool)>) const = 0;
+	virtual void exec(AgentProxy&, typename AgentProxy::handler_type) const = 0;
 
 	abstract_node<AgentProxy>* attach_child(std::unique_ptr<abstract_node<AgentProxy>> node) {
 		if (!node) {
