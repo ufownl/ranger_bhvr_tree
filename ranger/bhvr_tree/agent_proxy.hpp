@@ -50,7 +50,7 @@ public:
 		// nop
 	}
 
-	agent_type& get_agent() const {
+	agent_type& operator * () const {
 		return m_agent;
 	}
 
