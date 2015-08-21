@@ -45,15 +45,15 @@ private:
 					abstract_node<AgentProxy>* node,
 					typename AgentProxy::handler_type hdl) const {
 		if (node) {
-			node->exec(ap, [=, &ap] (bool result) {
+			node->exec(ap, [=, &ap] (bool result, void*) {
 				if (!result) {
-					hdl(false);
+					ap(hdl, false);
 				} else {
 					exec_impl(ap, node->get_next_sibling(), std::move(hdl));
 				}
 			});
 		} else {
-			hdl(true);
+			ap(hdl, true);
 		}
 	}
 };

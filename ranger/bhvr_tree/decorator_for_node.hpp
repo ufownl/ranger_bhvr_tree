@@ -45,7 +45,7 @@ public:
 		if (node && m_count > 0) {
 			exec_impl(ap, node, m_count, false, std::move(hdl));
 		} else {
-			hdl(false);
+			ap(hdl, false);
 		}
 	}
 
@@ -56,11 +56,11 @@ private:
 					bool current,
 					typename AgentProxy::handler_type hdl) const {
 		if (count > 0) {
-			node->exec(ap, [=, &ap] (bool result) {
+			node->exec(ap, [=, &ap] (bool result, void*) {
 				exec_impl(ap, node, count - 1, current || result, std::move(hdl));
 			});
 		} else {
-			hdl(current);
+			ap(hdl, current);
 		}
 	}
 

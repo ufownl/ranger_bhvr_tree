@@ -35,7 +35,7 @@
 namespace ranger { namespace bhvr_tree {
 
 template <	class Agent,
-			class Handler = std::function<void(bool)>,
+			class Handler = std::function<void(bool, Agent*)>,
 			class Mutex = std::mutex,
 			class Clock = std::chrono::high_resolution_clock>
 class agent_proxy
@@ -58,6 +58,10 @@ public:
 		return &m_agent;
 	}
 
+	void operator () (const handler_type& hdl, bool result) const {
+		hdl(result, &m_agent);
+	}
+
 private:
 	agent_type& m_agent;
 };
@@ -70,6 +74,10 @@ public:
 	using handler_type = Handler;
 	using mutex_type = Mutex;
 	using clock_type = Clock;
+
+	void operator () (const handler_type& hdl, bool result) const {
+		hdl(result, nullptr);
+	}
 };
 
 // An optional policy for agent_proxy.

@@ -9,7 +9,7 @@ int main() {
 		root->attach_child(node_ptr(new true_node));
 
 		sample_agent_proxy ap;
-		root->exec(ap, [] (bool result) {
+		root->exec(ap, [] (bool result, void*) {
 			std::cout << result << std::endl;
 		});
 
@@ -21,7 +21,7 @@ int main() {
 		root->attach_child(node_ptr(new false_node));
 
 		sample_agent_proxy ap;
-		root->exec(ap, [] (bool result) {
+		root->exec(ap, [] (bool result, void*) {
 			std::cout << result << std::endl;
 		});
 

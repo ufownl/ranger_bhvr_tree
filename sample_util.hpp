@@ -7,7 +7,7 @@
 #include <chrono>
 #include <stdio.h>
 
-using handler_actor = caf::typed_actor<caf::reacts_to<bool>>;
+using handler_actor = caf::typed_actor<caf::reacts_to<bool, void*>>;
 
 class sample_handler {
 public:
@@ -15,8 +15,8 @@ public:
 	sample_handler(const T& hdl)
 		: m_actor(caf::spawn([hdl] (handler_actor::pointer self) -> handler_actor::behavior_type {
 			return {
-				[=] (bool result) {
-					hdl(result);
+				[=] (bool result, void* agent) {
+					hdl(result, agent);
 					self->quit();
 				}
 			};
@@ -46,8 +46,8 @@ public:
 		return *this;
 	}
 
-	void operator () (bool result) const {
-		caf::anon_send(m_actor, result);
+	void operator () (bool result, void* agent) const {
+		caf::anon_send(m_actor, result, agent);
 	}
 
 private:
@@ -60,7 +60,7 @@ template <bool Result>
 class behavior_node : public ranger::bhvr_tree::abstract_node<sample_agent_proxy> {
 public:
 	void exec(sample_agent_proxy& ap, sample_handler hdl) const override {
-		hdl(Result);
+		ap(hdl, Result);
 	}
 };
 

@@ -16,7 +16,7 @@ int main() {
 	sample_agent_proxy ap;
 	for (auto i = 0; i < 10; ++i) {
 		caf::spawn([&] {
-			root->exec(ap, [] (bool result) {
+			root->exec(ap, [] (bool result, void*) {
 				std::cout << result << std::endl;
 			});
 		});

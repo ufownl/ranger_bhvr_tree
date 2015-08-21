@@ -53,16 +53,16 @@ public:
 
 		if (data->count > 0) {
 			for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
-				node->exec(ap, [=, &ap] (bool result) {
+				node->exec(ap, [=, &ap] (bool result, void*) {
 					std::lock_guard<mutex_type> lock(data->mtx);
 					data->result += (result == m_expected ? 1 : 0);
 					if (--data->count == 0) {
-						hdl(data->result == m_count);
+						ap(hdl, data->result == m_count);
 					}
 				});
 			}
 		} else {
-			hdl(data->result == m_count);
+			ap(hdl, data->result == m_count);
 		}
 	}
 
