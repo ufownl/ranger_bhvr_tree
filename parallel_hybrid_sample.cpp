@@ -1,13 +1,8 @@
 #include "sample_util.hpp"
-#include "ranger/bhvr_tree/parallel_hybrid_node.hpp"
 
 int main() {
-	using node_ptr = std::unique_ptr<ranger::bhvr_tree::abstract_node<sample_agent_proxy>>;
-
-	node_ptr root(new ranger::bhvr_tree::parallel_hybrid_node<sample_agent_proxy>(2, true));
-	root->attach_child(node_ptr(new true_node));
-	root->attach_child(node_ptr(new false_node));
-	root->attach_child(node_ptr(new true_node));
+	sample_generator gen;
+	auto root = gen.generate("parallel_hybrid_sample.xml");
 
 	sample_agent_proxy ap;
 	root->exec(ap, [] (bool result, void*) {

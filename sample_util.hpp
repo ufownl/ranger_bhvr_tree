@@ -2,7 +2,7 @@
 #define SAMPLE_UTIL_HPP
 
 #include "ranger/bhvr_tree/agent_proxy.hpp"
-#include "ranger/bhvr_tree/abstract_node.hpp"
+#include "ranger/bhvr_tree/xml_generator.hpp"
 #include <caf/all.hpp>
 #include <chrono>
 #include <stdio.h>
@@ -65,20 +65,44 @@ public:
 };
 
 struct true_node : public behavior_node<true> {
-	using super = behavior_node<true>;
+	static constexpr const char* name() {
+		return "true_node";
+	}
 
 	void exec(sample_agent_proxy& ap, sample_handler hdl) const final {
 		puts("true_node::exec");
-		super::exec(ap, std::move(hdl));
+		behavior_node<true>::exec(ap, std::move(hdl));
 	}
 };
 
 struct false_node : public behavior_node<false> {
-	using super = behavior_node<false>;
+	static constexpr const char* name() {
+		return "false_node";
+	}
 
 	void exec(sample_agent_proxy& ap, sample_handler hdl) const final {
 		puts("false_node::exec");
-		super::exec(ap, std::move(hdl));
+		behavior_node<false>::exec(ap, std::move(hdl));
+	}
+};
+
+class sample_generator
+	: public ranger::bhvr_tree::xml_generator<sample_agent_proxy, true_node, false_node> {
+public:
+	using node_pointer =
+		std::unique_ptr<ranger::bhvr_tree::abstract_node<sample_agent_proxy>>;
+
+protected:
+	using ranger::bhvr_tree::xml_generator<sample_agent_proxy, true_node, false_node>::generate_node;
+
+	node_pointer generate_node(	rapidxml::xml_node<>* data,
+								ranger::bhvr_tree::generate_node_type<true_node>) const final {
+		return node_pointer(new true_node);
+	}
+
+	node_pointer generate_node(	rapidxml::xml_node<>* data,
+								ranger::bhvr_tree::generate_node_type<false_node>) const final {
+		return node_pointer(new false_node);
 	}
 };
 

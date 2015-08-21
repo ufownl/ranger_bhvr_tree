@@ -26,49 +26,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RANGER_BHVR_TREE_DECORATOR_UNTIL_NODE_HPP
-#define RANGER_BHVR_TREE_DECORATOR_UNTIL_NODE_HPP
+#ifndef RANGER_BHVR_TREE_BASIC_GENERATOR_HPP
+#define RANGER_BHVR_TREE_BASIC_GENERATOR_HPP
 
-#include "ranger/bhvr_tree/abstract_node.hpp"
+#include "ranger/bhvr_tree/abstract_generator.hpp"
+#include "ranger/bhvr_tree/selector_node.hpp"
+#include "ranger/bhvr_tree/sequence_node.hpp"
+#include "ranger/bhvr_tree/parallel_selector_node.hpp"
+#include "ranger/bhvr_tree/parallel_sequence_node.hpp"
+#include "ranger/bhvr_tree/parallel_hybrid_node.hpp"
+#include "ranger/bhvr_tree/decorator_not_node.hpp"
+#include "ranger/bhvr_tree/decorator_for_node.hpp"
+#include "ranger/bhvr_tree/decorator_until_node.hpp"
+#include "ranger/bhvr_tree/decorator_counter_node.hpp"
+#include "ranger/bhvr_tree/decorator_timer_node.hpp"
 
 namespace ranger { namespace bhvr_tree {
 
-template <class AgentProxy>
-class decorator_until_node : public abstract_node<AgentProxy> {
-public:
-	static constexpr const char* name() {
-		return "decorator_until_node";
-	}
-
-	decorator_until_node(bool expected) : m_expected(expected) {
-		// nop
-	}
-
-	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
-		auto node = this->get_first_child();
-		if (node) {
-			exec_impl(ap, node, std::move(hdl));
-		} else {
-			ap(hdl, false);
-		}
-	}
-
-private:
-	void exec_impl(	AgentProxy& ap,
-					abstract_node<AgentProxy>* node,
-					typename AgentProxy::handler_type hdl) const {
-		node->exec(ap, [=, &ap] (bool result, void*) {
-			if (result == m_expected) {
-				ap(hdl, result);
-			} else {
-				exec_impl(ap, node, std::move(hdl));
-			}
-		});
-	}
-
-	bool m_expected;
-};
+template <class AgentProxy, class Data>
+using basic_generator =
+	abstract_generator<
+		AgentProxy, Data,
+		selector_node<AgentProxy>,
+		sequence_node<AgentProxy>,
+		parallel_selector_node<AgentProxy>,
+		parallel_sequence_node<AgentProxy>,
+		parallel_hybrid_node<AgentProxy>,
+		decorator_not_node<AgentProxy>,
+		decorator_for_node<AgentProxy>,
+		decorator_until_node<AgentProxy>,
+		decorator_counter_node<AgentProxy>,
+		decorator_timer_node<AgentProxy>
+	>;
 
 } }
 
-#endif	// RANGER_BHVR_TREE_DECORATOR_UNTIL_NODE_HPP
+#endif	// RANGER_BHVR_TREE_BASIC_GENERATOR_HPP

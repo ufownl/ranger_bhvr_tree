@@ -1,24 +1,9 @@
 #include "sample_util.hpp"
-#include "ranger/bhvr_tree/decorator_not_node.hpp"
 
 int main() {
-	using node_ptr = std::unique_ptr<ranger::bhvr_tree::abstract_node<sample_agent_proxy>>;
-
-	{
-		node_ptr root(new ranger::bhvr_tree::decorator_not_node<sample_agent_proxy>);
-		root->attach_child(node_ptr(new true_node));
-
-		sample_agent_proxy ap;
-		root->exec(ap, [] (bool result, void*) {
-			std::cout << result << std::endl;
-		});
-
-		caf::await_all_actors_done();
-	}
-
-	{
-		node_ptr root(new ranger::bhvr_tree::decorator_not_node<sample_agent_proxy>);
-		root->attach_child(node_ptr(new false_node));
+	sample_generator gen;
+	for (auto path: {"decorator_not_sample_0.xml", "decorator_not_sample_1.xml"}) {
+		auto root = gen.generate(path);
 
 		sample_agent_proxy ap;
 		root->exec(ap, [] (bool result, void*) {

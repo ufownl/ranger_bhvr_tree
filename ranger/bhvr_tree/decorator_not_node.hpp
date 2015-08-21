@@ -36,6 +36,10 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class decorator_not_node : public abstract_node<AgentProxy> {
 public:
+	static constexpr const char* name() {
+		return "decorator_not_node";
+	}
+
 	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
 		auto node = this->get_first_child();
 		if (node) {

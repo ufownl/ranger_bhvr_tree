@@ -1,5 +1,4 @@
 #include "sample_util.hpp"
-#include "ranger/bhvr_tree/decorator_counter_node.hpp"
 
 void exec(	sample_agent_proxy& ap,
 			const ranger::bhvr_tree::abstract_node<sample_agent_proxy>& root,
@@ -13,10 +12,8 @@ void exec(	sample_agent_proxy& ap,
 }
 
 int main() {
-	using node_ptr = std::unique_ptr<ranger::bhvr_tree::abstract_node<sample_agent_proxy>>;
-
-	node_ptr root(new ranger::bhvr_tree::decorator_counter_node<sample_agent_proxy>(6));
-	root->attach_child(node_ptr(new true_node));
+	sample_generator gen;
+	auto root = gen.generate("decorator_counter_sample.xml");
 
 	sample_agent_proxy ap;
 	exec(ap, *root, 10);

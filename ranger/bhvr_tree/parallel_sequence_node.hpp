@@ -26,8 +26,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef RANGER_BHVR_TREE_PARALLEL_SELECTOR_NODE_HPP
-#define RANGER_BHVR_TREE_PARALLEL_SELECTOR_NODE_HPP
+#ifndef RANGER_BHVR_TREE_PARALLEL_SEQUENCE_NODE_HPP
+#define RANGER_BHVR_TREE_PARALLEL_SEQUENCE_NODE_HPP
 
 #include "ranger/bhvr_tree/abstract_node.hpp"
 #include <mutex>
@@ -37,6 +37,10 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class parallel_sequence_node : public abstract_node<AgentProxy> {
 public:
+	static constexpr const char* name() {
+		return "parallel_sequence_node";
+	}
+
 	using mutex_type = typename AgentProxy::mutex_type;
 
 	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
@@ -70,4 +74,4 @@ private:
 
 } }
 
-#endif	// RANGER_BHVR_TREE_PARALLEL_SELECTOR_NODE_HPP
+#endif	// RANGER_BHVR_TREE_PARALLEL_SEQUENCE_NODE_HPP

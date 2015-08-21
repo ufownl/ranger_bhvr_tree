@@ -36,6 +36,10 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class decorator_counter_node : public abstract_node<AgentProxy> {
 public:
+	static constexpr const char* name() {
+		return "decorator_counter_node";
+	}
+
 	decorator_counter_node(size_t count) : m_count(count) {
 		// nop
 	}

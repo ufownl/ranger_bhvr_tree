@@ -37,6 +37,10 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class decorator_timer_node : public abstract_node<AgentProxy> {
 public:
+	static constexpr const char* name() {
+		return "decorator_timer_node";
+	}
+
 	using clock_type = typename AgentProxy::clock_type;
 	using duration_type = typename clock_type::duration;
 

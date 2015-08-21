@@ -37,6 +37,10 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class parallel_selector_node : public abstract_node<AgentProxy> {
 public:
+	static constexpr const char* name() {
+		return "parallel_selector_node";
+	}
+
 	using mutex_type = typename AgentProxy::mutex_type;
 
 	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {

@@ -36,6 +36,10 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class selector_node : public abstract_node<AgentProxy> {
 public:
+	static constexpr const char* name() {
+		return "selector_node";
+	}
+
 	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
 		exec_impl(ap, this->get_first_child(), std::move(hdl));
 	}
