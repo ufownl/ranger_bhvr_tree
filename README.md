@@ -1,4 +1,6 @@
 # ranger_bhvr_tree
+
+[![Join the chat at https://gitter.im/ufownl/ranger_bhvr_tree](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ufownl/ranger_bhvr_tree?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 This is a C++11 behavior tree implementation.
 
 ## 简单说明
