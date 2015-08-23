@@ -4,7 +4,6 @@
 #include "ranger/bhvr_tree/agent_proxy.hpp"
 #include "ranger/bhvr_tree/xml_generator.hpp"
 #include <caf/all.hpp>
-#include <chrono>
 #include <stdio.h>
 
 using handler_actor = caf::typed_actor<caf::reacts_to<bool, void*>>;
