@@ -1,6 +1,6 @@
 CXX			= g++
 LD			= g++
-CXXFLAGS	= -std=c++11 -g -Wall
+CXXFLAGS	= -std=c++11 -g -Wall -I..
 LDFLAGS		= -lcaf_core
 SOURCES		= $(wildcard *.cpp)
 
