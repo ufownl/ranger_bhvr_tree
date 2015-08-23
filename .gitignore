@@ -32,3 +32,6 @@
 
 # Vim SWP files
 *.swp
+
+# Build
+build/
