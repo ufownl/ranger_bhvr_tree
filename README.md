@@ -9,7 +9,7 @@ ranger_bhvr_tree仅需包含相应头文件即可使用，然而为了方便测�
 
 ### Handler Policy Concept
 接下来是一个合格的`Handler Policy`所需要具备的最少特性：
-* 支持从任意Signature为`void(bool, Agent*)`的`Callable Object`到`Handler Policy`的隐式转换
+* 支持从任意`Signature`为`void(bool, Agent*)`的`Callable Object`到`Handler Policy`的隐式转换
 * 支持复制语义和移动语义
 * 提供`void operator () (bool, Agent*)`
 
