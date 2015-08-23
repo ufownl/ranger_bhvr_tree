@@ -31,7 +31,7 @@
 
 #include "ranger/bhvr_tree/basic_generator.hpp"
 #include <rapidxml/rapidxml.hpp>
-#include <rapidxml/rapidxml_utils.hpp>
+#include <vector>
 #include <stdlib.h>
 #include <string.h>
 
@@ -43,31 +43,12 @@ class xml_generator
 public:
 	using node_pointer = std::unique_ptr<abstract_node<AgentProxy>>;
 
-	node_pointer generate(const char* path) const {
-		try {
-			rapidxml::file<> fin(path);
-			rapidxml::xml_document<> doc;
-			doc.parse<0>(fin.data());
+	node_pointer generate(const char* str) const {
+		return generate(str, strlen(str));
+	}
 
-			auto data = doc.first_node("bhvr_tree");
-			if (!data) {
-				std::cerr << "bhvr_tree_error: cannot find root node" << std::endl;
-				return node_pointer();
-			}
-
-			auto node = generate_node_by_data(data);
-			if (node) {
-				generate_children(data, *node);
-			}
-
-			return node;
-		} catch (const rapidxml::parse_error& e) {
-			std::cerr << "parse_error: " << e.what() << " [" << e.where<const char>() << "]" << std::endl;
-		} catch (const std::runtime_error& e) {
-			std::cerr << "runtime_error: " << e.what() << std::endl;
-		}
-
-		return node_pointer();
+	node_pointer generate(const std::string& str) const {
+		return generate(str.c_str(), str.size());
 	}
 
 protected:
@@ -169,6 +150,31 @@ protected:
 	}
 
 private:
+	node_pointer generate(const char* str, size_t len) const {
+		try {
+			std::vector<char> buf(str, str + len + 1);
+			rapidxml::xml_document<> doc;
+			doc.parse<0>(&buf.front());
+
+			auto data = doc.first_node("bhvr_tree");
+			if (!data) {
+				std::cerr << "bhvr_tree_error: cannot find root node" << std::endl;
+				return node_pointer();
+			}
+
+			auto node = generate_node_by_data(data);
+			if (node) {
+				generate_children(data, *node);
+			}
+
+			return node;
+		} catch (const rapidxml::parse_error& e) {
+			std::cerr << "parse_error: " << e.what() << " [" << e.where<const char>() << "]" << std::endl;
+		}
+
+		return node_pointer();
+	}
+
 	node_pointer generate_node_by_data(rapidxml::xml_node<>* data) const {
 		auto name = data->first_attribute("class");
 		if (!name) {

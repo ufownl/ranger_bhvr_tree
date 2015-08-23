@@ -13,7 +13,11 @@ void exec(	sample_agent_proxy& ap,
 
 int main() {
 	sample_generator gen;
-	auto root = gen.generate("decorator_counter_sample.xml");
+	auto root = gen.generate(
+		"<bhvr_tree class = \"decorator_counter_node\" count = \"6\">"
+			"<bhvr_tree class = \"true_node\"/>"
+		"</bhvr_tree>"
+	);
 
 	sample_agent_proxy ap;
 	exec(ap, *root, 10);

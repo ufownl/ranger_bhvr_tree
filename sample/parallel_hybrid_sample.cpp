@@ -2,7 +2,13 @@
 
 int main() {
 	sample_generator gen;
-	auto root = gen.generate("parallel_hybrid_sample.xml");
+	auto root = gen.generate(
+		"<bhvr_tree class = \"parallel_hybrid_node\" count = \"2\" expected = \"true\">"
+			"<bhvr_tree class = \"true_node\"/>"
+			"<bhvr_tree class = \"false_node\"/>"
+			"<bhvr_tree class = \"true_node\"/>"
+		"</bhvr_tree>"
+	);
 
 	sample_agent_proxy ap;
 	root->exec(ap, [] (bool result, void*) {

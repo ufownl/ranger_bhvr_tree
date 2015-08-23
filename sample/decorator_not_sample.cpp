@@ -2,8 +2,15 @@
 
 int main() {
 	sample_generator gen;
-	for (auto path: {"decorator_not_sample_0.xml", "decorator_not_sample_1.xml"}) {
-		auto root = gen.generate(path);
+	for (auto str:	{
+						"<bhvr_tree class = \"decorator_not_node\">"
+							"<bhvr_tree class = \"true_node\"/>"
+						"</bhvr_tree>",
+						"<bhvr_tree class = \"decorator_not_node\">"
+							"<bhvr_tree class = \"false_node\"/>"
+						"</bhvr_tree>"
+					}) {
+		auto root = gen.generate(str);
 
 		sample_agent_proxy ap;
 		root->exec(ap, [] (bool result, void*) {
