@@ -44,8 +44,8 @@ struct generate_node_type {
 template <class AgentProxy, class Data, class T>
 class generator_unit {
 protected:
-	using node_pointer = std::unique_ptr<abstract_node<AgentProxy>>;
-	virtual node_pointer generate_node(Data, generate_node_type<T>) const = 0;
+	virtual std::unique_ptr<abstract_node<AgentProxy>>
+	generate_node(Data, generate_node_type<T>) const = 0;
 };
 
 template <class AgentProxy, class Data, class... Ts>
@@ -72,7 +72,8 @@ public:
 	template <class... Us>
 	using extend = abstract_generator<AgentProxy, Data, Ts..., Us...>;
 
-	using node_pointer = std::unique_ptr<abstract_node<AgentProxy>>;
+	using node_type = abstract_node<AgentProxy>;
+	using node_pointer = std::unique_ptr<node_type>;
 
 	abstract_generator() {
 		handler_register<Ts...>::regist(m_generate_handlers);

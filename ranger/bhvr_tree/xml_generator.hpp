@@ -41,7 +41,11 @@ template <class AgentProxy, class... Ts>
 class xml_generator
 	: public basic_generator<AgentProxy, rapidxml::xml_node<>*>::template extend<Ts...> {
 public:
-	using node_pointer = std::unique_ptr<abstract_node<AgentProxy>>;
+	using super =
+		typename basic_generator<AgentProxy, rapidxml::xml_node<>*>::template extend<Ts...>;
+
+	using node_type = typename super::node_type;
+	using node_pointer = typename super::node_pointer;
 
 	node_pointer generate(const char* str) const {
 		return generate(str, strlen(str));
@@ -52,7 +56,7 @@ public:
 	}
 
 protected:
-	using basic_generator<AgentProxy, rapidxml::xml_node<>*>::template extend<Ts...>::generate_node;
+	using super::generate_node;
 
 	node_pointer generate_node(	rapidxml::xml_node<>* data,
 								generate_node_type<selector_node<AgentProxy>>) const final {
@@ -185,7 +189,7 @@ private:
 		return this->generate_node_by_name(name->value(), data);
 	}
 
-	void generate_children(rapidxml::xml_node<>* data, abstract_node<AgentProxy>& node) const {
+	void generate_children(rapidxml::xml_node<>* data, node_type& node) const {
 		for (auto i = data->first_node("bhvr_tree"); i; i = i->next_sibling("bhvr_tree")) {
 			auto child = generate_node_by_data(i);
 			if (!child) {

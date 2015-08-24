@@ -65,11 +65,13 @@ struct false_node : public behavior_node<false> {
 class test_generator
 	: public ranger::bhvr_tree::xml_generator<test_agent_proxy, true_node, false_node> {
 public:
-	using node_pointer =
-		std::unique_ptr<ranger::bhvr_tree::abstract_node<test_agent_proxy>>;
+	using super = ranger::bhvr_tree::xml_generator<test_agent_proxy, true_node, false_node>;
+
+	using node_type = super::node_type;
+	using node_pointer = super::node_pointer;
 
 protected:
-	using ranger::bhvr_tree::xml_generator<test_agent_proxy, true_node, false_node>::generate_node;
+	using super::generate_node;
 
 	node_pointer generate_node(	rapidxml::xml_node<>* data,
 								ranger::bhvr_tree::generate_node_type<true_node>) const final {

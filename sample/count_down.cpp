@@ -41,14 +41,14 @@ class count_down_generator
 	: public xml_generator<	sample_agent_proxy<size_t>,
 							cond_node, tick_node, true_node> {
 public:
-	using node_pointer =
-		std::unique_ptr<abstract_node<sample_agent_proxy<size_t>>>;
+	using super =
+		xml_generator<sample_agent_proxy<size_t>, cond_node, tick_node, true_node>;
+
+	using node_type = super::node_type;
+	using node_pointer = super::node_pointer;
 
 protected:
-	using xml_generator<
-		sample_agent_proxy<size_t>,
-		cond_node, tick_node, true_node
-	>::generate_node;
+	using super::generate_node;
 
 	node_pointer generate_node(	rapidxml::xml_node<>* data,
 								generate_node_type<cond_node>) const final {
