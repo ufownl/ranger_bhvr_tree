@@ -158,7 +158,7 @@ private:
 		try {
 			std::vector<char> buf(str, str + len + 1);
 			rapidxml::xml_document<> doc;
-			doc.parse<0>(&buf.front());
+			doc.parse<0>(buf.data());
 
 			auto data = doc.first_node("bhvr_tree");
 			if (!data) {
