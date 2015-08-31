@@ -30,7 +30,7 @@
 #define RANGER_BHVR_TREE_XML_GENERATOR_HPP
 
 #include "ranger/bhvr_tree/basic_generator.hpp"
-#include <rapidxml/rapidxml.hpp>
+#include <rapidxml.hpp>
 #include <vector>
 #include <stdlib.h>
 #include <string.h>
