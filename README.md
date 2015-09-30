@@ -12,5 +12,5 @@ ranger_bhvr_tree仅需包含相应头文件即可使用，然而为了方便测�
 * 支持复制语义和移动语义
 * 提供`void operator () (bool, Agent*)`
 
-示例见[sample_util.hpp](https://github.com/ufownl/ranger_bhvr_tree/blob/master/sample/sample_util.hpp)中`class sample_handler`定义。
+示例见[sample_util.hpp](https://github.com/ufownl/ranger_bhvr_tree/blob/master/sample/sample_util.hpp#L13)中`class sample_handler`定义。
 
