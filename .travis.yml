@@ -9,6 +9,6 @@ addons:
         sources: ubuntu-toolchain-r-test
         packages: g++-4.8
 
-before_script: if [ $CXX == "g++" ]; then export CXX="g++-4.8" fi
+before_script: if [ $CXX == "g++" ]; then export CXX="g++-4.8"; fi
 
 script: cmake . && make && make test
