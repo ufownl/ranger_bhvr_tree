@@ -11,5 +11,6 @@ FOREACH(SRC ${TEST_SOURCES})
 		${BHVR_TREE_SOURCE_DIR}/contrib/googletest/src/gtest-all.cc
 		${BHVR_TREE_SOURCE_DIR}/contrib/googletest/src/gtest_main.cc
 	)
+	TARGET_LINK_LIBRARIES(${TGT} pthread)
 	ADD_TEST(NAME ${TGT} COMMAND ${TGT})
 ENDFOREACH()
