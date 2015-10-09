@@ -1,5 +1,6 @@
 # ranger_bhvr_tree
 [![Join the chat at https://gitter.im/ufownl/ranger_bhvr_tree](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ufownl/ranger_bhvr_tree?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/ufownl/ranger_bhvr_tree.svg?branch=master)](https://travis-ci.org/ufownl/ranger_bhvr_tree)
 
 This is a C++11 implementation of behavior tree.
 
