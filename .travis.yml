@@ -4,11 +4,23 @@ compiler:
     - gcc
     - clang
 
+env:
+    global:
+    - secure: "ld9uaKVggBI13RtQE718vrhGZmeVYiWNUPv+mZu3abgarfjt0RUOi/G1hgUij/5P5ZHiJL3rUoLaFcrqelv4CNXUThK40LP3Xv+FBlROTF0YZJ3YakeSM/JxYQc9jE3cuR94j+SzPHo6ppl3FPb7DnlYkpycd0+M2/IL0cVxU91lUwjNYoJGox7RzOfFfIg553ESNX9UQ2Yk2B4MVFDvWxqNWiQiNTbSvUDWbU6FNEbuOvT5zkSZGEDp2w2Svt/9cdZ9IyqdlHCiw7JPdvZBSKjTOT+IoI+MyVZ89RmPwskTrW4r/ArwkVL4xGUxaTNdvjSi1EZ+sZKEPoG9dRW2jXef71pnFNTXEFyFqo9VP4CKDoB2M1vtXHv33OzeeHgtQHMhcAS+MXSOyfEUMRiTjb8SnzkJFm+/e1Zzn0LtaSRm3kxoYoq4RSTcgNaOUH8+xFWNsyZMCJdZCV8i7xQQ2mdrmgV+7IQ0m+2nmecV/yupVs45isOs2W9/pkCdVQp03jh1EH601+Ayzw4H5cg1QuxOkwFuDQuCocfEyQnyhzHoKJGqmgKJxyjMLA3sOyVpEZfQo0oc4frNWnU7daVPevCNx/Xh0Yp2w0pBdjzzCPuife1K9dFexPZ01CqHV0KD01ewzUWHjvg9gwuB42djwrdjOxS9mbYgE2hiNLCPXzU="
+
 addons:
     apt:
         sources: ubuntu-toolchain-r-test
         packages: g++-4.8
+    coverity_scan:
+        project:
+            name: "ufownl/ranger_bhvr_tree"
+            description: "Build submitted via Travis CI"
+        notification_email: ufownl@gmail.com
+        build_command_prepend: "cmake ."
+        build_command:   "make"
+        branch_pattern: coverity_scan
 
 before_script: if [ $CXX == "g++" ]; then export CXX="g++-4.8"; fi
 
-script: cmake . && make && make test
+script: if [ $COVERITY_SCAN_BRANCH != 1 ]; then cmake . && make && make test; fi
