@@ -1,12 +1,10 @@
 language: cpp
 
-compiler:
-    - gcc
-    - clang
+compiler: gcc
 
 env:
     global:
-    - secure: "ld9uaKVggBI13RtQE718vrhGZmeVYiWNUPv+mZu3abgarfjt0RUOi/G1hgUij/5P5ZHiJL3rUoLaFcrqelv4CNXUThK40LP3Xv+FBlROTF0YZJ3YakeSM/JxYQc9jE3cuR94j+SzPHo6ppl3FPb7DnlYkpycd0+M2/IL0cVxU91lUwjNYoJGox7RzOfFfIg553ESNX9UQ2Yk2B4MVFDvWxqNWiQiNTbSvUDWbU6FNEbuOvT5zkSZGEDp2w2Svt/9cdZ9IyqdlHCiw7JPdvZBSKjTOT+IoI+MyVZ89RmPwskTrW4r/ArwkVL4xGUxaTNdvjSi1EZ+sZKEPoG9dRW2jXef71pnFNTXEFyFqo9VP4CKDoB2M1vtXHv33OzeeHgtQHMhcAS+MXSOyfEUMRiTjb8SnzkJFm+/e1Zzn0LtaSRm3kxoYoq4RSTcgNaOUH8+xFWNsyZMCJdZCV8i7xQQ2mdrmgV+7IQ0m+2nmecV/yupVs45isOs2W9/pkCdVQp03jh1EH601+Ayzw4H5cg1QuxOkwFuDQuCocfEyQnyhzHoKJGqmgKJxyjMLA3sOyVpEZfQo0oc4frNWnU7daVPevCNx/Xh0Yp2w0pBdjzzCPuife1K9dFexPZ01CqHV0KD01ewzUWHjvg9gwuB42djwrdjOxS9mbYgE2hiNLCPXzU="
+    - secure: "pd4lscyez3kJ1J9o9E5M0g6g3lgMraZX4andmGcitShloXuowhAi90rqk4Bq1QqPgchugK9755fqRmKOZTD/f8tRqDYGZd2hUmMlooOJ4Q0GLOIcp6f4hSiaIu51dkrnQbojN3ywFviPjDW5srWDo6Z9e2V/mn6yV5SCdJQqZBgoUH8WAaqr2eGUyIz8loZXGOiMekt73bJux2qwSgyREtRUSX2pgnOWhX3hsS49WYnZftJObSH+BIVcKJQZWjLoGdUYmdbuthn267vfwoFsP7nMTDc2oPZKI6pI29MUyUjp7i11Dq0k4XyvmBFNaYjgzJXd+ac/uHg/brZiVl6GIXDY5KHKXd0R6JAF24u/u4eeg4Cqjn9PFM3DhyLEvk+4ZcBzucjUwgFTe8sPFGqBtdcgUI1Moz7E6gX0/FFK2Zta3U3U9p73yx3jNrW5kBlAftJYOtX4i6fLf4v4I0RZdvyGiXqqAMQzcyM9QTiw2b9ncm0lJ+SrWs+xMfsELsSWCqEyWYOIegSoi3KdGoda+XEycNtfGN237140HS52CPF4uNbGnQh4Ys2GOLoa+12jib8ulN8B+MxIo3lfnePpeYIjA/7T5eOCPQ65tJP/p/VYDXr4qiNFNEwsutQQsvAW9vf7+JSRxi4TWesK/C+dadmSIBHqM58Ormzym/cLmNI="
 
 addons:
     apt:
@@ -17,10 +15,14 @@ addons:
             name: "ufownl/ranger_bhvr_tree"
             description: "Build submitted via Travis CI"
         notification_email: ufownl@gmail.com
-        build_command_prepend: "cmake ."
+        build_command_prepend: "cmake .."
         build_command:   "make"
         branch_pattern: coverity_scan
 
-before_script: if [ $CXX == "g++" ]; then export CXX="g++-4.8"; fi
+before_script:
+- export CC="gcc-4.8"
+- export CXX="g++-4.8"
+- mkdir build
+- cd build
 
-script: if [ $COVERITY_SCAN_BRANCH != 1 ]; then cmake . && make && make test; fi
+script: if [ $COVERITY_SCAN_BRANCH != 1 ]; then cmake .. && make && make test; fi
