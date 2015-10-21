@@ -53,7 +53,7 @@ public:
 	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
 		auto node = this->get_first_child();
 		if (node && ap.expired_then_update(this, m_dur)) {
-			node->exec(ap, [=, &ap] (bool result, void*) {
+			node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
 				ap(hdl, result);
 			});
 		} else {

@@ -57,7 +57,7 @@ private:
 	void exec_impl(	AgentProxy& ap,
 					abstract_node<AgentProxy>* node,
 					typename AgentProxy::handler_type hdl) const {
-		node->exec(ap, [=, &ap] (bool result, void*) {
+		node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
 			if (result == m_expected) {
 				ap(hdl, result);
 			} else {

@@ -51,7 +51,7 @@ public:
 
 		if (data->count > 0) {
 			for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
-				node->exec(ap, [=, &ap] (bool result, void*) {
+				node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
 					std::lock_guard<mutex_type> lock(data->mtx);
 					data->result = data->result || result;
 					if (--data->count == 0) {

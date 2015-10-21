@@ -47,7 +47,7 @@ public:
 	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
 		auto node = this->get_first_child();
 		if (node && ap.less_then_increase(this, m_count)) {
-			node->exec(ap, [=, &ap] (bool result, void*) {
+			node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
 				ap(hdl, result);
 			});
 		} else {

@@ -60,7 +60,7 @@ private:
 					bool current,
 					typename AgentProxy::handler_type hdl) const {
 		if (count > 0) {
-			node->exec(ap, [=, &ap] (bool result, void*) {
+			node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
 				exec_impl(ap, node, count - 1, current || result, std::move(hdl));
 			});
 		} else {

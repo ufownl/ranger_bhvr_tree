@@ -49,7 +49,7 @@ private:
 					abstract_node<AgentProxy>* node,
 					typename AgentProxy::handler_type hdl) const {
 		if (node) {
-			node->exec(ap, [=, &ap] (bool result, void*) {
+			node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
 				if (!result) {
 					ap(hdl, false);
 				} else {
