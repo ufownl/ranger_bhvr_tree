@@ -27,74 +27,74 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef RANGER_BHVR_TREE_AGENT_PROXY_HPP
-#define	RANGER_BHVR_TREE_AGENT_PROXY_HPP
+#define  RANGER_BHVR_TREE_AGENT_PROXY_HPP
 
 #include "ranger/bhvr_tree/detail/agent_proxy_base.hpp"
 #include <functional>
 
 namespace ranger { namespace bhvr_tree {
 
-template <	class Agent,
-			class Handler = std::function<void(bool, Agent*)>,
-			class Mutex = std::mutex,
-			class Clock = std::chrono::high_resolution_clock>
+template <class Agent,
+          class Handler = std::function<void(bool, Agent*)>,
+          class Mutex = std::mutex,
+          class Clock = std::chrono::high_resolution_clock>
 class agent_proxy
-	: public detail::agent_proxy_base<Mutex, Clock, agent_proxy<Agent, Handler, Mutex, Clock>> {
+  : public detail::agent_proxy_base<Mutex, Clock, agent_proxy<Agent, Handler, Mutex, Clock>> {
 public:
-	using agent_type = Agent;
-	using handler_type = Handler;
-	using mutex_type = Mutex;
-	using clock_type = Clock;
+  using agent_type = Agent;
+  using handler_type = Handler;
+  using mutex_type = Mutex;
+  using clock_type = Clock;
 
-	agent_proxy(agent_type& agent) : m_agent(agent) {
-		// nop
-	}
+  agent_proxy(agent_type& agent) : m_agent(agent) {
+    // nop
+  }
 
-	agent_type& operator * () const {
-		return m_agent;
-	}
+  agent_type& operator * () const {
+    return m_agent;
+  }
 
-	agent_type* operator -> () const {
-		return &m_agent;
-	}
+  agent_type* operator -> () const {
+    return &m_agent;
+  }
 
-	void operator () (const handler_type& hdl, bool result) const {
-		hdl(result, &m_agent);
-	}
+  void operator () (const handler_type& hdl, bool result) const {
+    hdl(result, &m_agent);
+  }
 
 private:
-	agent_type& m_agent;
+  agent_type& m_agent;
 };
 
 template <class Handler, class Mutex, class Clock>
 class agent_proxy<void, Handler, Mutex, Clock>
-	: public detail::agent_proxy_base<Mutex, Clock, agent_proxy<void, Handler, Mutex, Clock>> {
+  : public detail::agent_proxy_base<Mutex, Clock, agent_proxy<void, Handler, Mutex, Clock>> {
 public:
-	using agent_type = void;
-	using handler_type = Handler;
-	using mutex_type = Mutex;
-	using clock_type = Clock;
+  using agent_type = void;
+  using handler_type = Handler;
+  using mutex_type = Mutex;
+  using clock_type = Clock;
 
-	void operator () (const handler_type& hdl, bool result) const {
-		hdl(result, nullptr);
-	}
+  void operator () (const handler_type& hdl, bool result) const {
+    hdl(result, nullptr);
+  }
 };
 
 // An optional policy for agent_proxy.
 struct dummy_mutex {
-	void lock() {
-		// nop
-	}
+  void lock() {
+    // nop
+  }
 
-	bool try_lock() {
-		return true;
-	}
+  bool try_lock() {
+    return true;
+  }
 
-	void unlock() {
-		// nop
-	}
+  void unlock() {
+    // nop
+  }
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_AGENT_PROXY_HPP
+#endif  // RANGER_BHVR_TREE_AGENT_PROXY_HPP

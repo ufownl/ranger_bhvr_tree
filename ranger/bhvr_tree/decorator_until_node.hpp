@@ -36,39 +36,39 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class decorator_until_node : public abstract_node<AgentProxy> {
 public:
-	static constexpr const char* name() {
-		return "decorator_until_node";
-	}
+  static constexpr const char* name() {
+    return "decorator_until_node";
+  }
 
-	decorator_until_node(bool expected) : m_expected(expected) {
-		// nop
-	}
+  decorator_until_node(bool expected) : m_expected(expected) {
+    // nop
+  }
 
-	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
-		auto node = this->get_first_child();
-		if (node) {
-			exec_impl(ap, node, std::move(hdl));
-		} else {
-			ap(hdl, false);
-		}
-	}
+  void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
+    auto node = this->get_first_child();
+    if (node) {
+      exec_impl(ap, node, std::move(hdl));
+    } else {
+      ap(hdl, false);
+    }
+  }
 
 private:
-	void exec_impl(	AgentProxy& ap,
-					abstract_node<AgentProxy>* node,
-					typename AgentProxy::handler_type hdl) const {
-		node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
-			if (result == m_expected) {
-				ap(hdl, result);
-			} else {
-				exec_impl(ap, node, std::move(hdl));
-			}
-		});
-	}
+  void exec_impl(AgentProxy& ap,
+                 abstract_node<AgentProxy>* node,
+                 typename AgentProxy::handler_type hdl) const {
+    node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
+      if (result == m_expected) {
+        ap(hdl, result);
+      } else {
+        exec_impl(ap, node, std::move(hdl));
+      }
+    });
+  }
 
-	bool m_expected;
+  bool m_expected;
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_DECORATOR_UNTIL_NODE_HPP
+#endif  // RANGER_BHVR_TREE_DECORATOR_UNTIL_NODE_HPP

@@ -45,20 +45,20 @@ namespace ranger { namespace bhvr_tree {
 
 template <class AgentProxy, class Data>
 using basic_generator =
-	abstract_generator<
-		AgentProxy, Data,
-		selector_node<AgentProxy>,
-		sequence_node<AgentProxy>,
-		parallel_selector_node<AgentProxy>,
-		parallel_sequence_node<AgentProxy>,
-		parallel_hybrid_node<AgentProxy>,
-		decorator_not_node<AgentProxy>,
-		decorator_for_node<AgentProxy>,
-		decorator_until_node<AgentProxy>,
-		decorator_counter_node<AgentProxy>,
-		decorator_timer_node<AgentProxy>
-	>;
+  abstract_generator<
+    AgentProxy, Data,
+    selector_node<AgentProxy>,
+    sequence_node<AgentProxy>,
+    parallel_selector_node<AgentProxy>,
+    parallel_sequence_node<AgentProxy>,
+    parallel_hybrid_node<AgentProxy>,
+    decorator_not_node<AgentProxy>,
+    decorator_for_node<AgentProxy>,
+    decorator_until_node<AgentProxy>,
+    decorator_counter_node<AgentProxy>,
+    decorator_timer_node<AgentProxy>
+  >;
 
 } }
 
-#endif	// RANGER_BHVR_TREE_BASIC_GENERATOR_HPP
+#endif  // RANGER_BHVR_TREE_BASIC_GENERATOR_HPP

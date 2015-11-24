@@ -36,29 +36,29 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class decorator_counter_node : public abstract_node<AgentProxy> {
 public:
-	static constexpr const char* name() {
-		return "decorator_counter_node";
-	}
+  static constexpr const char* name() {
+    return "decorator_counter_node";
+  }
 
-	decorator_counter_node(size_t count) : m_count(count) {
-		// nop
-	}
+  decorator_counter_node(size_t count) : m_count(count) {
+    // nop
+  }
 
-	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
-		auto node = this->get_first_child();
-		if (node && ap.less_then_increase(this, m_count)) {
-			node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
-				ap(hdl, result);
-			});
-		} else {
-			ap(hdl, false);
-		}
-	}
+  void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
+    auto node = this->get_first_child();
+    if (node && ap.less_then_increase(this, m_count)) {
+      node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
+        ap(hdl, result);
+      });
+    } else {
+      ap(hdl, false);
+    }
+  }
 
 private:
-	size_t m_count;
+  size_t m_count;
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_DECORATOR_COUNTER_NODE_HPP
+#endif  // RANGER_BHVR_TREE_DECORATOR_COUNTER_NODE_HPP

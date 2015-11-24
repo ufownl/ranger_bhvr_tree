@@ -38,14 +38,14 @@ namespace ranger { namespace bhvr_tree {
 
 template <class T>
 struct generate_node_type {
-	// nop
+  // nop
 };
 
 template <class AgentProxy, class Data, class T>
 class generator_unit {
 protected:
-	virtual std::unique_ptr<abstract_node<AgentProxy>>
-	generate_node(Data, generate_node_type<T>) const = 0;
+  virtual std::unique_ptr<abstract_node<AgentProxy>>
+  generate_node(Data, generate_node_type<T>) const = 0;
 };
 
 template <class AgentProxy, class Data, class... Ts>
@@ -53,78 +53,78 @@ class generator_interface;
 
 template <class AgentProxy, class Data, class T, class... Ts>
 class generator_interface<AgentProxy, Data, T, Ts...>
-	: public generator_unit<AgentProxy, Data, T>
-	, public generator_interface<AgentProxy, Data, Ts...> {
+  : public generator_unit<AgentProxy, Data, T>
+  , public generator_interface<AgentProxy, Data, Ts...> {
 protected:
-	using generator_unit<AgentProxy, Data, T>::generate_node;
-	using generator_interface<AgentProxy, Data, Ts...>::generate_node;
+  using generator_unit<AgentProxy, Data, T>::generate_node;
+  using generator_interface<AgentProxy, Data, Ts...>::generate_node;
 };
 
 template <class AgentProxy, class Data, class T>
 class generator_interface<AgentProxy, Data, T> : generator_unit<AgentProxy, Data, T> {
 protected:
-	using generator_unit<AgentProxy, Data, T>::generate_node;
+  using generator_unit<AgentProxy, Data, T>::generate_node;
 };
 
 template <class AgentProxy, class Data, class... Ts>
 class abstract_generator : public generator_interface<AgentProxy, Data, Ts...> {
 public:
-	template <class... Us>
-	using extend = abstract_generator<AgentProxy, Data, Ts..., Us...>;
+  template <class... Us>
+  using extend = abstract_generator<AgentProxy, Data, Ts..., Us...>;
 
-	using node_type = abstract_node<AgentProxy>;
-	using node_pointer = std::unique_ptr<node_type>;
+  using node_type = abstract_node<AgentProxy>;
+  using node_pointer = std::unique_ptr<node_type>;
 
-	abstract_generator() {
-		handler_register<Ts...>::regist(m_generate_handlers);
-	}
+  abstract_generator() {
+    handler_register<Ts...>::regist(m_generate_handlers);
+  }
 
-	virtual ~abstract_generator() {
-		// nop
-	}
+  virtual ~abstract_generator() {
+    // nop
+  }
 
-	node_pointer generate_node_by_name(const char* name, Data data) const {
-		auto it = m_generate_handlers.find(name);
-		if (it == m_generate_handlers.end()) {
-			std::cerr << "bhvr_tree_error: cannot find node[" << name << "]'s generate handler" << std::endl;
-			return node_pointer();
-		}
+  node_pointer generate_node_by_name(const char* name, Data data) const {
+    auto it = m_generate_handlers.find(name);
+    if (it == m_generate_handlers.end()) {
+      std::cerr << "bhvr_tree_error: cannot find node[" << name << "]'s generate handler" << std::endl;
+      return node_pointer();
+    }
 
-		return (this->*it->second)(data);
-	}
+    return (this->*it->second)(data);
+  }
 
 private:
-	template <class... Us>
-	struct handler_register;
+  template <class... Us>
+  struct handler_register;
 
-	template <class U, class... Us>
-	struct handler_register<U, Us...> {
-		template <class T>
-		static void regist(T& handlers) {
-			handlers.emplace(U::name(), &abstract_generator<AgentProxy, Data, Ts...>::generate_node_helper<U>);
-			handler_register<Us...>::regist(handlers);
-		}
-	};
+  template <class U, class... Us>
+  struct handler_register<U, Us...> {
+    template <class T>
+    static void regist(T& handlers) {
+      handlers.emplace(U::name(), &abstract_generator<AgentProxy, Data, Ts...>::generate_node_helper<U>);
+      handler_register<Us...>::regist(handlers);
+    }
+  };
 
-	template <class U>
-	struct handler_register<U> {
-		template <class T>
-		static void regist(T& handlers) {
-			handlers.emplace(U::name(), &abstract_generator<AgentProxy, Data, Ts...>::generate_node_helper<U>);
-		}
-	};
+  template <class U>
+  struct handler_register<U> {
+    template <class T>
+    static void regist(T& handlers) {
+      handlers.emplace(U::name(), &abstract_generator<AgentProxy, Data, Ts...>::generate_node_helper<U>);
+    }
+  };
 
-	template <class T>
-	node_pointer generate_node_helper(Data data) const {
-		return this->generate_node(data, generate_node_type<T>());
-	}
+  template <class T>
+  node_pointer generate_node_helper(Data data) const {
+    return this->generate_node(data, generate_node_type<T>());
+  }
 
-	std::map<
-		std::string,
-		node_pointer (abstract_generator<AgentProxy, Data, Ts...>::*)(Data) const
-	> m_generate_handlers;
+  std::map<
+    std::string,
+    node_pointer (abstract_generator<AgentProxy, Data, Ts...>::*)(Data) const
+  > m_generate_handlers;
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_ABSTRACT_GENERATOR_HPP
+#endif  // RANGER_BHVR_TREE_ABSTRACT_GENERATOR_HPP

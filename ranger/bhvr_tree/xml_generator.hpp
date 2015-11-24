@@ -39,168 +39,168 @@ namespace ranger { namespace bhvr_tree {
 
 template <class AgentProxy, class... Ts>
 class xml_generator
-	: public basic_generator<AgentProxy, rapidxml::xml_node<>*>::template extend<Ts...> {
+  : public basic_generator<AgentProxy, rapidxml::xml_node<>*>::template extend<Ts...> {
 public:
-	using super =
-		typename basic_generator<AgentProxy, rapidxml::xml_node<>*>::template extend<Ts...>;
+  using super =
+    typename basic_generator<AgentProxy, rapidxml::xml_node<>*>::template extend<Ts...>;
 
-	using node_type = typename super::node_type;
-	using node_pointer = typename super::node_pointer;
+  using node_type = typename super::node_type;
+  using node_pointer = typename super::node_pointer;
 
-	node_pointer generate(const char* str) const {
-		return generate(str, strlen(str));
-	}
+  node_pointer generate(const char* str) const {
+    return generate(str, strlen(str));
+  }
 
-	node_pointer generate(const std::string& str) const {
-		return generate(str.c_str(), str.size());
-	}
+  node_pointer generate(const std::string& str) const {
+    return generate(str.c_str(), str.size());
+  }
 
 protected:
-	using super::generate_node;
+  using super::generate_node;
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<selector_node<AgentProxy>>) const final {
-		return node_pointer(new selector_node<AgentProxy>);
-	}
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<selector_node<AgentProxy>>) const final {
+    return node_pointer(new selector_node<AgentProxy>);
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<sequence_node<AgentProxy>>) const final {
-		return node_pointer(new sequence_node<AgentProxy>);
-	}
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<sequence_node<AgentProxy>>) const final {
+    return node_pointer(new sequence_node<AgentProxy>);
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<parallel_selector_node<AgentProxy>>) const final {
-		return node_pointer(new parallel_selector_node<AgentProxy>);
-	}
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<parallel_selector_node<AgentProxy>>) const final {
+    return node_pointer(new parallel_selector_node<AgentProxy>);
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<parallel_sequence_node<AgentProxy>>) const final {
-		return node_pointer(new parallel_sequence_node<AgentProxy>);
-	}
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<parallel_sequence_node<AgentProxy>>) const final {
+    return node_pointer(new parallel_sequence_node<AgentProxy>);
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<parallel_hybrid_node<AgentProxy>>) const final {
-		size_t count = 0;
-		bool expected = false;
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<parallel_hybrid_node<AgentProxy>>) const final {
+    size_t count = 0;
+    bool expected = false;
 
-		auto attr = data->first_attribute("count");
-		if (attr) {
-			char* end;
-			count = strtoul(attr->value(), &end, 10);
-		}
+    auto attr = data->first_attribute("count");
+    if (attr) {
+      char* end;
+      count = strtoul(attr->value(), &end, 10);
+    }
 
-		attr = data->first_attribute("expected");
-		if (attr && strcmp(attr->value(), "true") == 0) {
-			expected = true;
-		}
+    attr = data->first_attribute("expected");
+    if (attr && strcmp(attr->value(), "true") == 0) {
+      expected = true;
+    }
 
-		return node_pointer(new parallel_hybrid_node<AgentProxy>(count, expected));
-	}
+    return node_pointer(new parallel_hybrid_node<AgentProxy>(count, expected));
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<decorator_not_node<AgentProxy>>) const final {
-		return node_pointer(new decorator_not_node<AgentProxy>);
-	}
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<decorator_not_node<AgentProxy>>) const final {
+    return node_pointer(new decorator_not_node<AgentProxy>);
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<decorator_for_node<AgentProxy>>) const final {
-		size_t count = 0;
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<decorator_for_node<AgentProxy>>) const final {
+    size_t count = 0;
 
-		auto attr = data->first_attribute("count");
-		if (attr) {
-			char* end;
-			count = strtoul(attr->value(), &end, 10);
-		}
+    auto attr = data->first_attribute("count");
+    if (attr) {
+      char* end;
+      count = strtoul(attr->value(), &end, 10);
+    }
 
-		return node_pointer(new decorator_for_node<AgentProxy>(count));
-	}
+    return node_pointer(new decorator_for_node<AgentProxy>(count));
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<decorator_until_node<AgentProxy>>) const final {
-		bool expected = false;
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<decorator_until_node<AgentProxy>>) const final {
+    bool expected = false;
 
-		auto attr = data->first_attribute("expected");
-		if (attr && strcmp(attr->value(), "true") == 0) {
-			expected = true;
-		}
+    auto attr = data->first_attribute("expected");
+    if (attr && strcmp(attr->value(), "true") == 0) {
+      expected = true;
+    }
 
-		return node_pointer(new decorator_until_node<AgentProxy>(expected));
-	}
+    return node_pointer(new decorator_until_node<AgentProxy>(expected));
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<decorator_counter_node<AgentProxy>>) const final {
-		size_t count = 0;
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<decorator_counter_node<AgentProxy>>) const final {
+    size_t count = 0;
 
-		auto attr = data->first_attribute("count");
-		if (attr) {
-			char* end;
-			count = strtoul(attr->value(), &end, 10);
-		}
+    auto attr = data->first_attribute("count");
+    if (attr) {
+      char* end;
+      count = strtoul(attr->value(), &end, 10);
+    }
 
-		return node_pointer(new decorator_counter_node<AgentProxy>(count));
-	}
+    return node_pointer(new decorator_counter_node<AgentProxy>(count));
+  }
 
-	node_pointer generate_node(	rapidxml::xml_node<>* data,
-								generate_node_type<decorator_timer_node<AgentProxy>>) const final {
-		double dur = 0.0;
+  node_pointer generate_node(rapidxml::xml_node<>* data,
+                             generate_node_type<decorator_timer_node<AgentProxy>>) const final {
+    double dur = 0.0;
 
-		auto attr = data->first_attribute("duration");
-		if (attr) {
-			char* end;
-			dur = strtod(attr->value(), &end);
-		}
+    auto attr = data->first_attribute("duration");
+    if (attr) {
+      char* end;
+      dur = strtod(attr->value(), &end);
+    }
 
-		return node_pointer(new decorator_timer_node<AgentProxy>(std::chrono::duration<double>(dur)));
-	}
+    return node_pointer(new decorator_timer_node<AgentProxy>(std::chrono::duration<double>(dur)));
+  }
 
 private:
-	node_pointer generate(const char* str, size_t len) const {
-		try {
-			std::vector<char> buf(str, str + len + 1);
-			rapidxml::xml_document<> doc;
-			doc.parse<0>(buf.data());
+  node_pointer generate(const char* str, size_t len) const {
+    try {
+      std::vector<char> buf(str, str + len + 1);
+      rapidxml::xml_document<> doc;
+      doc.parse<0>(buf.data());
 
-			auto data = doc.first_node("bhvr_tree");
-			if (!data) {
-				std::cerr << "bhvr_tree_error: cannot find root node" << std::endl;
-				return node_pointer();
-			}
+      auto data = doc.first_node("bhvr_tree");
+      if (!data) {
+        std::cerr << "bhvr_tree_error: cannot find root node" << std::endl;
+        return node_pointer();
+      }
 
-			auto node = generate_node_by_data(data);
-			if (node) {
-				generate_children(data, *node);
-			}
+      auto node = generate_node_by_data(data);
+      if (node) {
+        generate_children(data, *node);
+      }
 
-			return node;
-		} catch (const rapidxml::parse_error& e) {
-			std::cerr << "parse_error: " << e.what() << " [" << e.where<const char>() << "]" << std::endl;
-		}
+      return node;
+    } catch (const rapidxml::parse_error& e) {
+      std::cerr << "parse_error: " << e.what() << " [" << e.where<const char>() << "]" << std::endl;
+    }
 
-		return node_pointer();
-	}
+    return node_pointer();
+  }
 
-	node_pointer generate_node_by_data(rapidxml::xml_node<>* data) const {
-		auto name = data->first_attribute("class");
-		if (!name) {
-			std::cerr << "bhvr_tree_error: cannot find class name attribute" << std::endl;
-			return node_pointer();
-		}
+  node_pointer generate_node_by_data(rapidxml::xml_node<>* data) const {
+    auto name = data->first_attribute("class");
+    if (!name) {
+      std::cerr << "bhvr_tree_error: cannot find class name attribute" << std::endl;
+      return node_pointer();
+    }
 
-		return this->generate_node_by_name(name->value(), data);
-	}
+    return this->generate_node_by_name(name->value(), data);
+  }
 
-	void generate_children(rapidxml::xml_node<>* data, node_type& node) const {
-		for (auto i = data->first_node("bhvr_tree"); i; i = i->next_sibling("bhvr_tree")) {
-			auto child = generate_node_by_data(i);
-			if (!child) {
-				continue;
-			}
+  void generate_children(rapidxml::xml_node<>* data, node_type& node) const {
+    for (auto i = data->first_node("bhvr_tree"); i; i = i->next_sibling("bhvr_tree")) {
+      auto child = generate_node_by_data(i);
+      if (!child) {
+        continue;
+      }
 
-			generate_children(i, *node.attach_child(std::move(child)));
-		}
-	}
+      generate_children(i, *node.attach_child(std::move(child)));
+    }
+  }
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_XML_GENERATOR_HPP
+#endif  // RANGER_BHVR_TREE_XML_GENERATOR_HPP

@@ -37,50 +37,50 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class parallel_hybrid_node : public abstract_node<AgentProxy> {
 public:
-	static constexpr const char* name() {
-		return "parallel_hybrid_node";
-	}
+  static constexpr const char* name() {
+    return "parallel_hybrid_node";
+  }
 
-	using mutex_type = typename AgentProxy::mutex_type;
+  using mutex_type = typename AgentProxy::mutex_type;
 
-	parallel_hybrid_node(size_t count, bool expected)
-		: m_count(count)
-		, m_expected(expected) {
-		// nop
-	}
+  parallel_hybrid_node(size_t count, bool expected)
+    : m_count(count)
+    , m_expected(expected) {
+    // nop
+  }
 
-	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
-		auto data = std::make_shared<internal_data>();
-		for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
-			++data->count;
-		}
+  void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
+    auto data = std::make_shared<internal_data>();
+    for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
+      ++data->count;
+    }
 
-		if (data->count > 0) {
-			for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
-				node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
-					std::lock_guard<mutex_type> lock(data->mtx);
-					data->result += (result == m_expected ? 1 : 0);
-					if (--data->count == 0) {
-						ap(hdl, data->result == m_count);
-					}
-				});
-			}
-		} else {
-			ap(hdl, data->result == m_count);
-		}
-	}
+    if (data->count > 0) {
+      for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
+        node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
+          std::lock_guard<mutex_type> lock(data->mtx);
+          data->result += (result == m_expected ? 1 : 0);
+          if (--data->count == 0) {
+            ap(hdl, data->result == m_count);
+          }
+        });
+      }
+    } else {
+      ap(hdl, data->result == m_count);
+    }
+  }
 
 private:
-	struct internal_data {
-		size_t count {0};
-		size_t result {0};
-		mutex_type mtx;
-	};
+  struct internal_data {
+    size_t count {0};
+    size_t result {0};
+    mutex_type mtx;
+  };
 
-	size_t m_count;
-	bool m_expected;
+  size_t m_count;
+  bool m_expected;
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_PARALLEL_HYBRID_NODE_HPP
+#endif  // RANGER_BHVR_TREE_PARALLEL_HYBRID_NODE_HPP

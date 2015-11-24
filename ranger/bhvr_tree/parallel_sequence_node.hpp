@@ -37,41 +37,41 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class parallel_sequence_node : public abstract_node<AgentProxy> {
 public:
-	static constexpr const char* name() {
-		return "parallel_sequence_node";
-	}
+  static constexpr const char* name() {
+    return "parallel_sequence_node";
+  }
 
-	using mutex_type = typename AgentProxy::mutex_type;
+  using mutex_type = typename AgentProxy::mutex_type;
 
-	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
-		auto data = std::make_shared<internal_data>();
-		for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
-			++data->count;
-		}
-		
-		if (data->count > 0) {
-			for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
-				node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
-					std::lock_guard<mutex_type> lock(data->mtx);
-					data->result = data->result && result;
-					if (--data->count == 0) {
-						ap(hdl, data->result);
-					}
-				});
-			}
-		} else {
-			ap(hdl, data->result);
-		}
-	}
+  void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
+    auto data = std::make_shared<internal_data>();
+    for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
+      ++data->count;
+    }
+    
+    if (data->count > 0) {
+      for (auto node = this->get_first_child(); node; node = node->get_next_sibling()) {
+        node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
+          std::lock_guard<mutex_type> lock(data->mtx);
+          data->result = data->result && result;
+          if (--data->count == 0) {
+            ap(hdl, data->result);
+          }
+        });
+      }
+    } else {
+      ap(hdl, data->result);
+    }
+  }
 
 private:
-	struct internal_data {
-		size_t count {0};
-		bool result {true};
-		mutex_type mtx;
-	};
+  struct internal_data {
+    size_t count {0};
+    bool result {true};
+    mutex_type mtx;
+  };
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_PARALLEL_SEQUENCE_NODE_HPP
+#endif  // RANGER_BHVR_TREE_PARALLEL_SEQUENCE_NODE_HPP

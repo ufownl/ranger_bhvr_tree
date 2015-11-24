@@ -27,7 +27,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef RANGER_BHVR_TREE_ABSTRACT_NODE_HPP
-#define	RANGER_BHVR_TREE_ABSTRACT_NODE_HPP
+#define  RANGER_BHVR_TREE_ABSTRACT_NODE_HPP
 
 #include <memory>
 
@@ -36,49 +36,49 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class abstract_node {
 public:
-	abstract_node() : m_last_child(nullptr) {
-		// nop
-	}
+  abstract_node() : m_last_child(nullptr) {
+    // nop
+  }
 
-	virtual ~abstract_node() {
-		// nop
-	}
+  virtual ~abstract_node() {
+    // nop
+  }
 
-	abstract_node(const abstract_node<AgentProxy>&) = delete;
-	abstract_node<AgentProxy>& operator = (const abstract_node<AgentProxy>&) = delete;
+  abstract_node(const abstract_node<AgentProxy>&) = delete;
+  abstract_node<AgentProxy>& operator = (const abstract_node<AgentProxy>&) = delete;
 
-	virtual void exec(AgentProxy&, typename AgentProxy::handler_type) const = 0;
+  virtual void exec(AgentProxy&, typename AgentProxy::handler_type) const = 0;
 
-	abstract_node<AgentProxy>* attach_child(std::unique_ptr<abstract_node<AgentProxy>> node) {
-		if (!node) {
-			return nullptr;
-		}
+  abstract_node<AgentProxy>* attach_child(std::unique_ptr<abstract_node<AgentProxy>> node) {
+    if (!node) {
+      return nullptr;
+    }
 
-		if (m_last_child) {
-			m_last_child->m_next_sibling = std::move(node);
-			m_last_child = m_last_child->m_next_sibling.get();
-		} else {
-			m_first_child = std::move(node);
-			m_last_child = m_first_child.get();
-		}
+    if (m_last_child) {
+      m_last_child->m_next_sibling = std::move(node);
+      m_last_child = m_last_child->m_next_sibling.get();
+    } else {
+      m_first_child = std::move(node);
+      m_last_child = m_first_child.get();
+    }
 
-		return m_last_child;
-	}
+    return m_last_child;
+  }
 
-	abstract_node<AgentProxy>* get_next_sibling() const {
-		return m_next_sibling.get();
-	}
+  abstract_node<AgentProxy>* get_next_sibling() const {
+    return m_next_sibling.get();
+  }
 
-	abstract_node<AgentProxy>* get_first_child() const {
-		return m_first_child.get();
-	}
+  abstract_node<AgentProxy>* get_first_child() const {
+    return m_first_child.get();
+  }
 
 private:
-	std::unique_ptr<abstract_node<AgentProxy>> m_next_sibling;
-	std::unique_ptr<abstract_node<AgentProxy>> m_first_child;
-	abstract_node<AgentProxy>* m_last_child;
+  std::unique_ptr<abstract_node<AgentProxy>> m_next_sibling;
+  std::unique_ptr<abstract_node<AgentProxy>> m_first_child;
+  abstract_node<AgentProxy>* m_last_child;
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_ABSTRACT_NODE_HPP
+#endif  // RANGER_BHVR_TREE_ABSTRACT_NODE_HPP

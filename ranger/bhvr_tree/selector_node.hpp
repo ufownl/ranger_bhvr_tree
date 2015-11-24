@@ -36,32 +36,32 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class selector_node : public abstract_node<AgentProxy> {
 public:
-	static constexpr const char* name() {
-		return "selector_node";
-	}
+  static constexpr const char* name() {
+    return "selector_node";
+  }
 
-	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
-		exec_impl(ap, this->get_first_child(), std::move(hdl));
-	}
+  void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
+    exec_impl(ap, this->get_first_child(), std::move(hdl));
+  }
 
 private:
-	void exec_impl(	AgentProxy& ap,
-					abstract_node<AgentProxy>* node,
-					typename AgentProxy::handler_type hdl) const {
-		if (node) {
-			node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
-				if (result) {
-					ap(hdl, true);
-				} else {
-					exec_impl(ap, node->get_next_sibling(), std::move(hdl));
-				}
-			});
-		} else {
-			ap(hdl, false);
-		}
-	}
+  void exec_impl(AgentProxy& ap,
+                 abstract_node<AgentProxy>* node,
+                 typename AgentProxy::handler_type hdl) const {
+    if (node) {
+      node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
+        if (result) {
+          ap(hdl, true);
+        } else {
+          exec_impl(ap, node->get_next_sibling(), std::move(hdl));
+        }
+      });
+    } else {
+      ap(hdl, false);
+    }
+  }
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_SELECTOR_NODE_HPP
+#endif  // RANGER_BHVR_TREE_SELECTOR_NODE_HPP

@@ -37,34 +37,34 @@ namespace ranger { namespace bhvr_tree {
 template <class AgentProxy>
 class decorator_timer_node : public abstract_node<AgentProxy> {
 public:
-	static constexpr const char* name() {
-		return "decorator_timer_node";
-	}
+  static constexpr const char* name() {
+    return "decorator_timer_node";
+  }
 
-	using clock_type = typename AgentProxy::clock_type;
-	using duration_type = typename clock_type::duration;
+  using clock_type = typename AgentProxy::clock_type;
+  using duration_type = typename clock_type::duration;
 
-	template <class Rep, class Period>
-	decorator_timer_node(const std::chrono::duration<Rep, Period>& dur)
-		: m_dur(std::chrono::duration_cast<duration_type>(dur)) {
-		// nop
-	}
+  template <class Rep, class Period>
+  decorator_timer_node(const std::chrono::duration<Rep, Period>& dur)
+    : m_dur(std::chrono::duration_cast<duration_type>(dur)) {
+    // nop
+  }
 
-	void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
-		auto node = this->get_first_child();
-		if (node && ap.expired_then_update(this, m_dur)) {
-			node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
-				ap(hdl, result);
-			});
-		} else {
-			ap(hdl, false);
-		}
-	}
+  void exec(AgentProxy& ap, typename AgentProxy::handler_type hdl) const final {
+    auto node = this->get_first_child();
+    if (node && ap.expired_then_update(this, m_dur)) {
+      node->exec(ap, [=, &ap] (bool result, typename AgentProxy::agent_type*) {
+        ap(hdl, result);
+      });
+    } else {
+      ap(hdl, false);
+    }
+  }
 
 private:
-	duration_type m_dur;
+  duration_type m_dur;
 };
 
 } }
 
-#endif	// RANGER_BHVR_TREE_DECORATOR_TIMER_NODE_HPP
+#endif  // RANGER_BHVR_TREE_DECORATOR_TIMER_NODE_HPP
